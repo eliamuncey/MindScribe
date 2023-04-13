@@ -1,0 +1,43 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <table class="table">
+      <thead>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Book Now</th>
+      </thead>
+ <tbody>
+  <% results.data._embedded.events.forEach(event=> { %>
+    <tr>
+      <td>
+        <img src=<%= event.images[0].url %> alt="Default Image">
+      </td>
+      <td>
+        <%= event.name %>
+      </td>
+      <td>
+        <%= event.dates.start.localDate %>
+      </td>
+      <td>
+        <%= event.dates.start.localTime %>
+      </td>
+      <td>
+        <button type="button" style="background-color:green"> <a class="nav-link active" href=
+        <%= event.url %>
+       > Book</a>
+      </button>
+      </td>
+    </tr>
+    <% })%>
+ </tbody>
+</table>
+</div>
+</main>
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>
