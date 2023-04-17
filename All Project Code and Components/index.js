@@ -61,11 +61,11 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-app.get('/welcome', (req, res) => {
+app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { //default route
   res.redirect('/login'); //this will call the /login route in the API
 });
 
@@ -101,7 +101,7 @@ app.post('/login', async (req, res) => {
       if (match) {
         req.session.user = data;
         req.session.save();
-        res.redirect('/discover');
+        res.redirect('/createnewnote');
       }
       else {
         res.render("pages/login", { message: "Username or password incorrect, plase try again" });
@@ -125,38 +125,14 @@ const auth = (req, res, next) => {
 // Authentication Required
 app.use(auth);
 
-app.get('/discover', (req, res) => {
-  axios({
-    url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      apikey: process.env.API_KEY,
-      keyword: 'Skrillex', //you can choose any artist/event here
-      size: 10,
-    },
-  })
-    .then(results => {
-      console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-      console.log(results.data._embedded.events[0].images[0].url);
-      res.render("pages/discover", {
-        results
-      });
-    })
-    .catch(error => {
-      console.log(err);
-      res.render("pages/discover", { message: "Invalid Keyword" });
-    });
-});
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login", { message: "Sucessfully logged out" });
 });
 
+app.get("/createnewnote", (req, res) => {
+  res.render("pages/createnewnote");
+})
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
