@@ -1,0 +1,22 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <%# Journal Selection Dropdown (To-Do) and Title Entry %>
+    <div class="input-group mb-3"> 
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Journal</button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">Example Journal 1</a></li>
+          <li><a class="dropdown-item" href="#">Example Journal 2</a></li>
+          <li><a class="dropdown-item" href="#">Example Journal 3</a></li>
+        </ul>
+        <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
+      </div>
+    <div class="input-group">
+
+        <textarea class="form-control" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note"></textarea>
+      </div>
+</main>
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>
