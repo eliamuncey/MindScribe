@@ -157,8 +157,19 @@ app.post('/savenote', function (req, res) {
     });
 });
 
-app.get('/home', (req, res) => { 
-  res.render("pages/home");
+app.get('/home', (req, res) => {
+  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
+  db.any(query)
+    .then(function (data) {
+      res.render('pages/home', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
 });
 
 app.get('/journals', (req, res) => { 

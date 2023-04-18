@@ -3,6 +3,26 @@
 
 <main>
     <h1><centre>Home</centre></h1>
+  <div class="container">
+    <table class="table">
+      <thead>
+        <th>Title</th>
+        <th>Entry</th>
+      </thead>
+      <tbody>
+        <tr>
+            <td>Title Placeholder Example</td>
+            <td>Entry Placeholder Example</td>
+        </tr>
+        <% results.forEach(function(entry) { %>
+        <tr>
+          <td><%= entry.entry_title %></td>
+          <td><%= entry.raw_text %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 </main>
 
 <%- include ('../partials/message') %>
