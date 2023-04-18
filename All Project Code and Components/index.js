@@ -134,6 +134,30 @@ app.get("/createnewnote", (req, res) => {
   res.render("pages/createnewnote");
 })
 
+app.post('/savenote', function (req, res) {
+  const query =
+    'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+  db.any(query, [
+    req.body.entry_title,
+    req.body.raw_text
+  ])
+    .then(function (data) {
+      res.status(201).json({
+        status: 'success',
+        data: data,
+        message: 'Note added successfully',
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while saving the note',
+      });
+    });
+});
+
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
