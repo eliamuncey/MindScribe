@@ -69,6 +69,10 @@ app.get('/', (req, res) => { //default route
   res.redirect('/login'); //this will call the /login route in the API
 });
 
+app.get('/login', (req, res) => {
+  res.render("pages/login");
+});
+
 app.get('/register', (req, res) => {
   res.render("pages/register");
 });
@@ -85,10 +89,6 @@ app.post('/register', async (req, res) => {
       console.log(err);
       res.render("pages/register", { message: "Username taken, try again with a different username" });
     });
-});
-
-app.get('/login', (req, res) => {
-  res.render("pages/login");
 });
 
 app.post('/login', async (req, res) => {
@@ -124,11 +124,6 @@ const auth = (req, res, next) => {
 
 // Authentication Required
 app.use(auth);
-
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.render("pages/login", { message: "Sucessfully logged out" });
-});
 
 app.get("/createnewnote", (req, res) => {
   res.render("pages/createnewnote");
@@ -172,17 +167,27 @@ app.get('/home', (req, res) => {
     });
 });
 
-app.get('/journals', (req, res) => { 
-  res.render("pages/journals");
+app.get('/journal', (req, res) => { 
+  res.render("pages/journal");
 });
 
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
 
-app.get('/account', (req, res) => { 
-  res.render("pages/account");
+app.get('/profile', (req, res) => { 
+  res.render("pages/profile");
 });
+
+app.get('/calendar', (req, res) => {
+  res.render("pages/calendar");
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render("pages/login", { message: "Sucessfully logged out" });
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
