@@ -101,7 +101,7 @@ app.post('/login', async (req, res) => {
       if (match) {
         req.session.user = data;
         req.session.save();
-        res.redirect('/createnewnote');
+        res.redirect('/home');
       }
       else {
         res.render("pages/login", { message: "Username or password incorrect, plase try again" });
@@ -142,7 +142,7 @@ app.post('/savenote', function (req, res) {
     req.body.raw_text
   ])
     .then(function (data) {
-      res.status(201).json({
+      res.status(200).json({
         status: 'success',
         data: data,
         message: 'Note added successfully',
