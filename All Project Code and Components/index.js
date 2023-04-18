@@ -157,7 +157,21 @@ app.post('/savenote', function (req, res) {
     });
 });
 
+app.get('/home', (req, res) => { 
+  res.render("pages/home");
+});
 
+app.get('/journals', (req, res) => { 
+  res.render("pages/journals");
+});
+
+app.get('/mood', (req, res) => { 
+  res.render("pages/mood");
+});
+
+app.get('/account', (req, res) => { 
+  res.render("pages/account");
+});
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
