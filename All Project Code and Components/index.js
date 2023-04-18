@@ -168,7 +168,19 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  res.render("pages/journal");
+  
+  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
+  db.any(query)
+    .then(function (data) {
+      res.render('pages/journal', {entries: data}); // Pass the 'data' to the 'entries' variable in the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
 });
 
 app.get('/mood', (req, res) => { 
