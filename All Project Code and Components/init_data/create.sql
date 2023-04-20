@@ -16,7 +16,7 @@ CREATE TABLE entries(
 entry_id SERIAL PRIMARY KEY,
 username VARCHAR(50) REFERENCES users (username),
 entry_title TEXT,
-entry_date DATE,
+entry_date DATE NOT NULL DEFAULT CURRENT_DATE,
 raw_text TEXT,
 formatted_text TEXT,
 summary_text TEXT,
