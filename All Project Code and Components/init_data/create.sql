@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS journals CASCADE;
 CREATE TABLE journals(
 journal_id SERIAL PRIMARY KEY,
 journal_name TEXT,
-username VARCHAR(50) REFERENCES users(username),
+username VARCHAR(50) REFERENCES users(username)
 );
 
 DROP TABLE IF EXISTS entries CASCADE;
