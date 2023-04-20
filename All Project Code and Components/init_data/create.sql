@@ -7,7 +7,7 @@ password CHAR(60) NOT NULL
 DROP TABLE IF EXISTS journals CASCADE;
 CREATE TABLE journals(
 journal_id SERIAL PRIMARY KEY,
-journal_name,
+journal_name TEXT,
 username VARCHAR(50) REFERENCES users(username),
 );
 
