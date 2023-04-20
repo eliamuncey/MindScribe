@@ -35,6 +35,18 @@ describe('Server!', () => {
         done();
       });
   });
+
+  it('negative : /register', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'user', password:'password'})
+      .end((err, res) => {
+        assert.strictEqual(res.status, 400);
+        assert.strictEqual(res.body.message, "Username taken, try again with another username");
+        done();
+      });
+  });
 });
   // ===========================================================================
   // TO-DO: Part A Login unit test case

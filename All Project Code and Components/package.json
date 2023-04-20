@@ -25,6 +25,6 @@
         "test": "mocha",
         "comment": "Set testandrun to 'npm run prestart && npm run start' to load html fast",
         "comment2": "Set testandrun to 'npm run prestart && npm run test' to test",
-        "testandrun": "npm run prestart && npm run start"
+        "testandrun": "npm run prestart && npm run test"
     }
 }

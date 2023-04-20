@@ -87,7 +87,7 @@ app.post('/register', async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/register", { message: "Username taken, try again with a different username" });
+      res.status(400).json({ message: "Username taken, try again with another username" });
     });
 });
 
