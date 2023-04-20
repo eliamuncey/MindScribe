@@ -24,7 +24,7 @@
         "dev": "nodemon -L server.js",
         "test": "mocha",
         "comment": "Set testandrun to 'npm run prestart && npm run start' to load html fast",
-        "comment2": "Set testandrun to 'npm run prestart && npm run test && npm run start' to test and load html",
+        "comment2": "Set testandrun to 'npm run prestart && npm run test' to test",
         "testandrun": "npm run prestart && npm run start"
     }
 }
