@@ -87,7 +87,7 @@ app.post('/register', async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/register", { message: "Username taken, try again with a different username" });
+      res.status(400).json({ message: "Username taken, try again with another username" });
     });
 });
 
@@ -109,7 +109,7 @@ app.post('/login', async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
+      res.status(400).json({ message: "Username taken, try again with another username" });
     });
 });
 
@@ -145,7 +145,7 @@ app.post('/savenote', function (req, res) {
     })
     .catch(function (err) {
       console.error(err);
-      res.status(500).json({
+      res.status(400).json({
         status: 'error',
         message: 'An error occurred while saving the note',
       });
