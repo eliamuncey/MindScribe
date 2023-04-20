@@ -9,6 +9,8 @@ chai.should();
 chai.use(chaiHttp);
 const {assert, expect} = chai;
 
+
+
 describe('Server!', () => {
   // Sample test case given to test / endpoint.
   it('Returns the default welcome message', done => {
@@ -23,6 +25,18 @@ describe('Server!', () => {
       });
   });
 
+  it('positive : /register', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'user', password:'password'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+});
   // ===========================================================================
   // TO-DO: Part A Login unit test case
-});
+// });
+
