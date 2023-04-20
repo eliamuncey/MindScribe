@@ -2,8 +2,11 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <%# Journal Selection Dropdown and Title Entry (To-Do)%>
-    <div class="input-group mb-3"> 
+  <div class="container">
+    <body>
+      <br>
+      <%# Journal Selection Dropdown and Title Entry (To-Do)%>
+      <!-- <div class="input-group mb-3"> 
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Journal</button>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="#">Example Journal 1</a></li>
@@ -11,51 +14,58 @@
           <li><a class="dropdown-item" href="#">Example Journal 3</a></li>
         </ul>
         <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
-      </div>
+      </div> -->
 
-    <%# Note Entry %>
-    <div class="input-group">
+      <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
+      <br>
+
+      <%# Note Entry %>
+      <div class="input-group">
         <textarea id="note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note"></textarea>
       </div>
 
-    <%# Save Button %>
+      <%# Save Button %>
       <div class="mt-3 text-center">
         <button id="save-note" class="btn btn-primary">Save Note</button>
-    </div>
+      </div>
+
+      <script>
+        var saveNoteButton = document.querySelector('#save-note'); 
+        saveNoteButton.addEventListener('click', function() { //on click of Save Note
+        var title = document.querySelector('#note-title').value.trim(); //gets title
+          var content = document.querySelector('#note-text').value.trim(); //gets text
+          fetch('/savenote', { //calls /savenote and passes note info
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' //data in json form so it can be parsed by API call
+          },
+          body: JSON.stringify({ //converts data to json strings
+            entry_title: title,
+            raw_text: content
+          })
+        })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('An error occurred while saving the note');
+          }
+        })
+        .then(function(data) {
+          console.log(data);
+          alert('Note saved successfully');
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert(err.message);
+        });
+      });
+    </script>
+    </body>
+  </div>
 </main>
 
-<script>
-    var saveNoteButton = document.querySelector('#save-note'); 
-    saveNoteButton.addEventListener('click', function() { //on click of Save Note
-        var title = document.querySelector('#note-title').value.trim(); //gets title
-        var content = document.querySelector('#note-text').value.trim(); //gets text
-        fetch('/savenote', { //calls /savenote and passes note info
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json' //data in json form so it can be parsed by API call
-        },
-        body: JSON.stringify({ //converts data to json strings
-          entry_title: title,
-          raw_text: content
-        })
-      })
-      .then(function(response) {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('An error occurred while saving the note');
-        }
-      })
-      .then(function(data) {
-        console.log(data);
-        alert('Note saved successfully');
-      })
-      .catch(function(err) {
-        console.error(err);
-        alert(err.message);
-      });
-    });
-  </script>
+
 
 <%- include ('../partials/message') %>
 <%- include ('../partials/footer') %>
