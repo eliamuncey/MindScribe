@@ -40,13 +40,38 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({username: 'user', password:'password'})
+      .send({username: 'user', password:'password'}) //tries sending duplicate register information
       .end((err, res) => {
         assert.strictEqual(res.status, 400);
         assert.strictEqual(res.body.message, "Username taken, try again with another username");
         done();
       });
   });
+
+    it('positive: login', (done) => {
+      chai
+        .request(server)
+        .post('/login')
+        .send({ username: 'user', password: 'password' })
+        .end((err, res) => {
+          assert.equal(res.status, 200);
+          done();
+        });
+    });
+
+    it('negative: login', (done) => {
+      chai
+        .request(server)
+        .post('/login')
+        .send({ username: 'incorrectuser', password: 'incorrectpassword' })
+        .end((err, res) => {
+          assert.strictEqual(res.status, 400);
+          assert.strictEqual(res.body.message, "Username taken, try again with another username");
+          done();
+        });
+    });
+    
+  
 });
   // ===========================================================================
   // TO-DO: Part A Login unit test case
