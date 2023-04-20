@@ -1,0 +1,71 @@
+Test Plan
+
+1. Product Analysis
+The product we are developing is a smart journaling app. The app uses the ChatGPT API to implement smart features that would not be possible without AI. The unique features we are considering include a feature which summarizes each journal entry for quick reference, a feature which adds formatting to each journal entry to increase readability, and a mood tracking feature which analyzes the text of each entry to detect the mood of the writing. This addresses the market for people who want to have a low-effort journaling practice entries because it allows users to put low effort into writing entries and low effort into reading when they revisit entries. The focus of our app should be on speed, ease of use, and simplicity.
+
+2. Test Strategy
+Our test strategy will primarily consist of unit testing by the software development team. Each feature should be built and tested on its own before deploying to be integrated with other features. All features should also have a check that delivers a message when the feature fails for any reason to prevent catastrophic failures and crashes. This will primarily consist of running the application on local machines and interacting with the application to check for the intended functionality, as well as implementing failure conditions. For larger features, once the full feature is built, we will do integration testing with automated test cases to ensure that all parts of the feature are working as intended.
+
+3. Test Objectives
+The objective of each test will be to ensure that the feature is fully developed and working before deploying to the application. Testing should also be performed to make sure that a failure informs the user and will not cause a crash. No partial features or features with unimplemented components should be deployed, such as filler text that will be filled in at a later date. This will ensure that at each stage of development, the application is a fully working product. This will also avoid scope creep where planned and partially integrated features are never fully developed.
+
+4. Test Criteria
+The criteria for a test will be as follows:
+- Does the feature perform its intended task sucessfully (if not, fix feature)
+- Do all parts of the feature work as intended (if not, fix or cut out those parts)
+- Does the feature interact properly with what is already developed in the app? (if not, prioritize what is already developed in the app as other features are depending on that)
+- Is there a condition in place if the feature fails that informs the user? (if not, implement)
+If the test meets all of these criteria, then the test will be deemed sucessful and the feature will be ready for deployment
+
+5. Resource Planning
+The two resources that need to be managed are time and feature development, which can both be accomplished through planning. When it comes to time, our team needs to make sure that we are properly dividing our time between planning, feature developmemt, and testing. Testing should go hand-in-hand with feature development, as every feature should be fully unit tested before deployment. Each member of the team should allocate time towards testing when developing features. The second resource of feature development refers to how some features that are developed are reliant on other features being in place before they can properly be built. Our team will develop a feature roadmap to plan out the order and priority in which the features are built to ensure that the core functionality is built. This will also ensure that during the testing phase, we will minimize the amount of features that we go back to test, as dependencies will be built on top of already implemented and tested features.
+
+6. Test Environment
+The test environment we will be using is docker containers. This will allow for all members of the team to test the application on their machines, regardless of what operating system they have. 
+
+7. Schedule & Estimation
+The unit testing process of feauture development should be performed as the feature is being developed and performed after the feature is complete. We estimate that 10% of the time taken to develop a feature will go into testing the feature to ensure that it functions correctly. The integration testing of the application will occur at the weekly team meeting, which will occur every Thursday. This will consist of the team going through the application, making sure all features are working as intended, and talking about/planning any integrations that we want to see that are not present. This part of the meeting should take approximately 15 minutes.
+
+8. Determine Test Deliverables
+The focus of testing will be on verification of sucessful API calls and handling of unsucessful API calls. We will not be concerned with time, as our application is intended to be simple and straightforward. We will aim for simplicity to avoid long API calls, and as this is a minimum viable product, the time taken will not be something that we worry about at this stage. The goal of testing will be to ensure that we have features that are fully working before being deployed. Therefore, the deliverables should be fully working features that interact with the currently implemented application and a way to handle when the features fail.
+
+
+
+UAT Plans
+Feature 1 - Creating a New Note
+Test Cases - There will be two test cases:
+1. The user will press create new note and be navigated to the new blank note, they will select the journal that the note will be in, write a title for the note, and write the entry body of the text.
+2. The user will press save note, the user will be redirected to the completed note which will be saved within the journal in which the note was assigned, and the note will be visible to the user.
+Test Data - The test data will consist of selecting a journal, title text, and body text.
+Test Environment - The test environment will consist of interaction with the application website which is being locally hosted using docker containers on a developer's laptop.
+Test Results - The test results will consist of if the fields were able to be sucessfully filled in, if the user was sucessfully redirected to the proper location, if the note is present after saving, and upon opening the note, if all information is properly displayed in the note. 
+User Acceptance Testers - The testers will consist of two groups. The initial testers will be the developers themselves. The second group of testers will consist of college-going friends and colleagues who will give an outside perspective on the testing process.
+
+Feature 2 - Editing a Note
+Test Cases - There will be three test cases:
+1. The user will open a created note and be navigated to the note with all information filled in.
+2. The user will press edit note, and the fields of the note will become editable. The user will then change the selected journal, the title of the note, and the body of the note. The user will then press save note.
+3. The user will be redirected to the edited note which will be in the journal in which the note is saved, and the note will be visible to the user.
+Test Data - The test data will consist of an already completed note, selecting a journal, new title text, and new body text.
+Test Environment - The test environment will consist of interaction with the application website which is being locally hosted using docker containers on a developer's laptop.
+Test Results - The test results will consist of if the note sucessfully opened with the unedited information, if the fields were able to be sucessfully edited, if the user was sucessfully redirected to the proper location, if the edited note is present after saving, and upon opening the note, if all edited information is properly displayed in the note. 
+User Acceptance Testers - The testers will consist of two groups. The initial testers will be the developers themselves. The second group of testers will consist of college-going friends and colleagues who will give an outside perspective on the testing process.
+
+Feature 3 - Formatting a Note with ChatGPT
+Test Cases - There will be three test cases:
+1. The user will open a created note and be navigated to the note with all information filled in.
+2. The user will press format note, and the body of the note will change and be formatted using ChatGPT. 
+3. The user will be redirected to the formatted note which will be in the journal in which the note is saved, and the note will be visible to the user.
+Test Data - The test data will consist of an already completed note and the formatted version of the body text.
+Test Environment - The test environment will consist of interaction with the application website which is being locally hosted using docker containers on a developer's laptop.
+Test Results - The test results will consist of if the note sucessfully opened with the unformatted information, if the formatting button sucessfully changed the body text to be formatted, if the user was sucessfully redirected to the proper location, and upon opening the note, if all formatted information is properly displayed in the note. 
+User Acceptance Testers - The testers will consist of two groups. The initial testers will be the developers themselves. The second group of testers will consist of college-going friends and colleagues who will give an outside perspective on the testing process.
+
+
+
+Risk Assesment
+Organizational Risk - There is currently a concerningly high risk of organization failure with the current project. Our team is off to a slow start due to a lack of initial planning. Our team needs to address this by effectively planning and delegating tasks so that members know what they need to accomplish. Our team is also having problems with agreeing on the scope of our project. To address this concern, our team will develop a feature roadmap to plan out the development of features so that core features and dependencies are built out and we create a fully developed and working minimum viable product. The potential loss in the scenario of organizational failure is a disjointed application with features that do not interact together in a meaningful way and a loss of development time which results in a less fleshed out application.
+
+Technical Risk - The technical risks our team faces are low. Due to our method of testing, every feature should be tested and failure cases handled before being deployed. This will lead to smoother integration testing and a lack of untested code in the finished product.
+
+Business Risk - There is currently no business risk, as this product is not intended to make a profit. There is a risk from our customer, which will be our TA, not seeing the value in our application, so we will think about how a feature will be useful and appealing and how to demonstrate that.
