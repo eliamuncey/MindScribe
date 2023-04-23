@@ -110,6 +110,7 @@ app.post('/login', async (req, res) => {
     .catch((err) => {
       console.log(err);
       res.render("pages/login", { message: "Username or password incorrect, plase try again" });
+      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
     });
 });
 
@@ -183,7 +184,7 @@ app.get('/home', (req, res) => {
   const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
   db.any(query)
     .then(function (data) {
-      res.render('pages/home', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -196,9 +197,10 @@ app.get('/home', (req, res) => {
 
 app.get('/journal', (req, res) => { 
   
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all entries
+  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
   db.any(query)
     .then(function (data) {
+      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
     .catch(function (err) {
