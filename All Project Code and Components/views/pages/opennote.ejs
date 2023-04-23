@@ -1,0 +1,30 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+      <body>
+        <br>
+        <%#Title Entry%>
+        <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Title of Static Note" value="My Static Note Title" readonly>
+        <br>
+  
+        <%# Note Entry %>
+        <div class="input-group">
+          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note" readonly>This is my static note. It contains important information that I want to remember.</textarea>
+        </div>
+  
+        <%# Edit Button %>
+        <div class="mt-3 text-center">
+          <button id="edit-note" class="btn btn-primary">Edit Note</button>
+        </div>
+  
+      </body>
+    </div>
+  </main>
+  
+
+
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>

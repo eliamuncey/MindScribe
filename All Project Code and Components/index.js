@@ -104,17 +104,16 @@ app.post('/login', async (req, res) => {
         res.redirect('/home');
       }
       else {
-        res.render("pages/login", { message: "Username or password incorrect, plase try again" });
+        res.render("pages/login", { message: "Username or password incorrect, please try again" });
       }
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
-      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
+      res.render("pages/login", { message: "Username or password incorrect, please try again" });
     });
 });
 
-// Authentication Middleware.
+// Authentication Middleware
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
@@ -152,6 +151,10 @@ app.post('/savenote', function (req, res) {
       });
     });
 });
+
+app.get("/opennote", (req, res) => {
+  res.render("pages/opennote");
+})
 
 app.get("/createnewjournal", (req, res) => {
   res.render("pages/createnewjournal");
@@ -200,7 +203,6 @@ app.get('/journal', (req, res) => {
   const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
   db.any(query)
     .then(function (data) {
-      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
     .catch(function (err) {
