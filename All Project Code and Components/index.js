@@ -154,6 +154,33 @@ app.post('/savenote', function (req, res) {
     });
 });
 
+app.get("/createnewjournal", (req, res) => {
+  res.render("pages/createnewjournal");
+})
+
+app.post('/savejournal', function (req, res) {
+  const query =
+    'INSERT INTO journals (journal_title, journal_description) VALUES ($1, $2) RETURNING *;';
+  db.any(query, [
+    req.body.journal_title,
+    req.body.journal_description
+  ])
+    .then(function (data) {
+      res.status(200).json({
+        status: 'success',
+        data: data,
+        message: 'Journal added successfully'
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(400).json({
+        status: 'error',
+        message: 'An error occurred while saving the journal'
+      });
+    });
+});
+
 app.get('/home', (req, res) => {
   const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
   db.any(query)
