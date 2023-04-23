@@ -1,30 +1,33 @@
-<%- include ('../partials/head') %>
-<%- include ('../partials/menu') %>
+<%- include('../partials/head') %>
+<%- include('../partials/menu') %>
 
 <main>
-    <div class="container">
-        <br>
-        <h1>Home</h1>
-        <br>
+  <div class="container">
+    <br>
+    <h1>Home</h1>
+    <br>
 
-        <br>
-        <div class="row">
-            <%if(entries){
-              var card = ''
-              entries.forEach(function(entry){
-                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
-                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
-                card += '<form action="/opennote">' +
-                  '<button type="submit" class="btn btn-primary">Open Note</button>' +
-                  '</form>';
-                card += '<p style="color:gray; font-size: 12px">' + entry.raw_text;
-                card += '</p></div></div>'; 
-              });
-            }%>
-            <%- card %>
+    <br>
+    <div class="row">
+      <% if (entries) { %>
+        <% entries.forEach(function (entry) { %>
+          <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title"><%= entry.entry_title %></h5>
+                <form action="/opennote">
+                  <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
+                  <button type="submit" class="btn btn-primary">Open Note</button>
+                </form>
+                <p style="color:gray; font-size: 12px"><%= entry.raw_text %></p>
+              </div>
+            </div>
           </div>
+        <% }) %>
+      <% } %>
     </div>
+  </div>
 </main>
 
-<%- include ('../partials/message') %>
-<%- include ('../partials/footer') %>
+<%- include('../partials/message') %>
+<%- include('../partials/footer') %>
