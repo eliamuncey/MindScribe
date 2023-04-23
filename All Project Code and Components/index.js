@@ -110,6 +110,7 @@ app.post('/login', async (req, res) => {
     .catch((err) => {
       console.log(err);
       res.render("pages/login", { message: "Username or password incorrect, plase try again" });
+      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
     });
 });
 
@@ -199,6 +200,7 @@ app.get('/journal', (req, res) => {
   const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
   db.any(query)
     .then(function (data) {
+      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
     .catch(function (err) {
