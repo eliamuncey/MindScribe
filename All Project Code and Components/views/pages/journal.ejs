@@ -4,21 +4,25 @@
 <main>
     <div class="container">
         <br>
-        <h1>Journal</h1>
+        <h1>Journals</h1>
         <br>
+
         <form action="/createnewjournal">
           <button type="submit" class="btn btn-primary">Create New Journal</button>
       </form>
+      
         <br>
         <div class="row">
-            <%if(entries){
+            <%if(journals){
               var card = "";
-              entries.forEach(function(entry){
+              journals.forEach(function(journal){
                 card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
-                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
-                card += '</h5><p class="card-text">Date: ' + entry.entry_date;
-                card += '<br>Summary: ' + entry.summary_text;
-                card += '</p><a href="' + '" class="btn btn-primary">Edit</a></div></div></div>'; 
+                card += '<div class="card-body"><h5 class="card-title">' + journal.journal_title;
+                card += '<form action="/home">' +
+                  '<button type="submit" class="btn btn-primary">Open Journal</button>' +
+                  '</form>';
+                card += '<p style="color:gray; font-size: 12px">' + journal.journal_description;
+                card += '</p></div></div>'; 
               });
             }%>
             <%- card %>
