@@ -78,6 +78,7 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+  console.log("Registration");
   const hash = await bcrypt.hash(req.body.password, 10);
   const values = [req.body.username, hash];
   query = "INSERT INTO users (username, password) VALUES ($1, $2);";
@@ -92,6 +93,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+  console.log("Login API")
   const values = [req.body.username];
   query = "SELECT * FROM users WHERE users.username = $1;";
 
@@ -140,14 +142,14 @@ app.post('/savenote', function (req, res) {
       res.status(200).json({
         status: 'success',
         data: data,
-        message: 'Note added successfully',
+        message: 'Note added successfully'
       });
     })
     .catch(function (err) {
       console.error(err);
       res.status(400).json({
         status: 'error',
-        message: 'An error occurred while saving the note',
+        message: 'An error occurred while saving the note'
       });
     });
 });

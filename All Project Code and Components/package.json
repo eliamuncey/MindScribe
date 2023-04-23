@@ -9,14 +9,16 @@
         "ejs-lint": "^0.3.0",
         "express": "^4.6.1",
         "express-session": "1.17.3",
-        "pg-promise": "^10.11.1"
+        "pg-promise": "^10.11.1",
+        "supertest" : "6.3.3"
     },
     "devDependencies": {
         "nodemon": "^2.0.7",
         "chai": "^4.2.0",
         "chai-http": "^4.3.0",
         "mocha": "^6.2.2",
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "supertest" : "6.3.3"
       },
     "scripts": {
         "prestart": "npm install",
@@ -25,6 +27,6 @@
         "test": "mocha",
         "comment": "Set testandrun to 'npm run prestart && npm run start' to load html fast",
         "comment2": "Set testandrun to 'npm run prestart && npm run test' to test",
-        "testandrun": "npm run prestart && npm run test"
+        "testandrun": "npm run prestart && npm run test && npm run start"
     }
 }
