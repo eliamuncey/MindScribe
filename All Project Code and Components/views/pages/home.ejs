@@ -2,29 +2,28 @@
 <%- include ('../partials/menu') %>
 
 <main>
-  <div class="container">
-    <br>
-    <h1>Home</h1>
-    <br>
-    <table class="table">
-      <thead>
-        <th>Title</th>
-        <th>Entry</th>
-      </thead>
-      <tbody>
-        <tr>
-            <td>Title Placeholder Example</td>
-            <td>Entry Placeholder Example</td>
-        </tr>
-        <% results.forEach(function(entry) { %>
-        <tr>
-          <td><%= entry.entry_title %></td>
-          <td><%= entry.raw_text %></td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
+    <div class="container">
+        <br>
+        <h1>Home</h1>
+        <br>
+
+        <br>
+        <div class="row">
+            <%if(entries){
+              var card = ''
+              entries.forEach(function(entry){
+                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
+                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
+                card += '<form action="/home">' +
+                  '<button type="submit" class="btn btn-primary">Open Note</button>' +
+                  '</form>';
+                card += '<p style="color:gray; font-size: 12px">' + entry.raw_text;
+                card += '</p></div></div>'; 
+              });
+            }%>
+            <%- card %>
+          </div>
+    </div>
 </main>
 
 <%- include ('../partials/message') %>

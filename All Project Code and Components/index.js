@@ -78,7 +78,6 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  console.log("Registration");
   const hash = await bcrypt.hash(req.body.password, 10);
   const values = [req.body.username, hash];
   query = "INSERT INTO users (username, password) VALUES ($1, $2);";
@@ -88,12 +87,11 @@ app.post('/register', async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json({ message: "Username taken, try again with another username" });
+      res.render("pages/register", { message: "Username taken, try again with a different username" });
     });
 });
 
 app.post('/login', async (req, res) => {
-  console.log("Login API")
   const values = [req.body.username];
   query = "SELECT * FROM users WHERE users.username = $1;";
 
@@ -111,7 +109,7 @@ app.post('/login', async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json({ message: "Username taken, try again with another username" });
+      res.render("pages/login", { message: "Username or password incorrect, plase try again" });
     });
 });
 
@@ -185,7 +183,7 @@ app.get('/home', (req, res) => {
   const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
   db.any(query)
     .then(function (data) {
-      res.render('pages/home', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -198,10 +196,10 @@ app.get('/home', (req, res) => {
 
 app.get('/journal', (req, res) => { 
   
-  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
+  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
   db.any(query)
     .then(function (data) {
-      res.render('pages/journal', {entries: data}); // Pass the 'data' to the 'entries' variable in the home page
+      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
     .catch(function (err) {
       console.error(err);
