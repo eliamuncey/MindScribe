@@ -152,9 +152,22 @@ app.post('/savenote', function (req, res) {
     });
 });
 
-app.get("/opennote", (req, res) => {
-  res.render("pages/opennote");
-})
+app.get('/opennote', (req, res) => { 
+  const entryId = req.query['entry-id'];
+  const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
+  db.any(query, [entryId])
+    .then(function (data) {
+      res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
+});
+
 
 app.get("/createnewjournal", (req, res) => {
   res.render("pages/createnewjournal");
@@ -199,7 +212,6 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  
   const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
   db.any(query)
     .then(function (data) {
