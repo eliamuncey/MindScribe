@@ -9,6 +9,20 @@
         <form action="/createnewnote">
             <button type="submit" class="btn btn-primary">New Note</button>
         </form>
+        <br>
+        <div class="row">
+            <%if(entries){
+              var card = "";
+              entries.forEach(function(entry){
+                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
+                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
+                card += '</h5><p class="card-text">Date: ' + entry.entry_date;
+                card += '<br>Summary: ' + entry.summary_text;
+                card += '</p><a href="' + '" class="btn btn-primary">Edit</a></div></div></div>'; 
+              });
+            }%>
+            <%- card %>
+          </div>
     </div>
 </main>
 
