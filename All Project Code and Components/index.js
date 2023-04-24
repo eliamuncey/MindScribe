@@ -168,6 +168,21 @@ app.get('/opennote', (req, res) => {
     });
 });
 
+app.get('/openjournal', (req, res) => { 
+  const journalId = req.query['journal-id'];
+  const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
+  db.any(query, [entryId])
+    .then(function (data) {
+      res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
+});
 
 app.get("/createnewjournal", (req, res) => {
   res.render("pages/createnewjournal");
@@ -197,16 +212,16 @@ app.post('/savejournal', function (req, res) {
 });
 
 app.get('/home', (req, res) => {
-  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
+  const query = 'SELECT * FROM journals'; // SQL query to retrieve all entries
   db.any(query)
     .then(function (data) {
-      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
+      res.render('pages/home', {journals: data}); // Pass the 'data' to the 'results' variable
     })
     .catch(function (err) {
       console.error(err);
       res.status(500).json({
         status: 'error',
-        message: 'An error occurred while fetching notes',
+        message: 'An error occurred while fetching journals',
       });
     });
 });

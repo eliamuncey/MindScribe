@@ -9,17 +9,18 @@
 
     <br>
     <div class="row">
-      <% if (entries) { %>
-        <% entries.forEach(function (entry) { %>
+      <% if(journals) { %>
+        <% journals.forEach(function (journal) { %>
           <div class="col-md-4">
             <div class="card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title"><%= entry.entry_title %></h5>
-                <form action="/opennote">
-                  <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
-                  <button type="submit" class="btn btn-primary">Open Note</button>
+              <img src="https://i.pinimg.com/originals/36/cf/33/36cf33fdb1dea05ecb998595aa64e893.png" class="card-img" />
+              <div class="card-body card-img-overlay text-center">
+                <br><br>
+                <form action="/openjournal">
+                  <input type="hidden" name="journal-id" value=<%= journal.journal_id %>>
+                  <button type="submit" class="btn btn-primary-outline stretched-link"><h5 class="card-title"><%= journal.journal_title %></h5></button>
                 </form>
-                <p style="color:gray; font-size: 12px"><%= entry.raw_text %></p>
+                <p style="color:gray; font-size: 12px"><%= journal.journal_description %></p>
               </div>
             </div>
           </div>
