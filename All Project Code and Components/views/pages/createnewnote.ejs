@@ -6,7 +6,7 @@
     <body>
       <br>
       <%# Journal Selection Dropdown and Title Entry (To-Do)%>
-      <!-- <div class="input-group mb-3"> 
+      <div class="input-group mb-3"> 
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Journal</button>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="#">Example Journal 1</a></li>
@@ -14,9 +14,7 @@
           <li><a class="dropdown-item" href="#">Example Journal 3</a></li>
         </ul>
         <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
-      </div> -->
-
-      <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
+      </div>
       <br>
 
       <%# Note Entry %>
@@ -41,7 +39,8 @@
           },
           body: JSON.stringify({ //converts data to json strings
             entry_title: title,
-            raw_text: content
+            raw_text: content,
+            journal_id: 1,
           })
         })
         .then(function(response) {
