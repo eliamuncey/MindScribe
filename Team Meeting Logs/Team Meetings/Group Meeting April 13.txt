@@ -1,1 +1,15 @@
-test
+Project Board
+-Project board is not being used, everyone needs to start creating issues for every feature they work on
+-Communicate to John what he can work on since he is out of the loop while on vacation
+
+Repository
+- Start commiting to main as soon as feature has been tested
+- Blake will resolve merge conflicts to ensure nothing is broken
+
+Group main points
+-Add better UI for notes
+-Add journal function
+-Make UI for journal look good
+-Add ability to open notes
+-Add ability to open journal
+-Next team meeting will be on Sunday
