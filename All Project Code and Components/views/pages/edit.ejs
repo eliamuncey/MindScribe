@@ -12,8 +12,10 @@
 		<div class="col"> 
         <div class="card" style="width: 18rem;">
 			<div class="card-body">
-				<p><input name="title" id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" value="<%= entry.entry_title %>"></p>
-				<p><textarea class="form-control" name="text" id="text" rows="3"><%= entry.raw_text %></textarea></p> <!-- text edit area-->
+				<input name="title" id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" value="<%= entry.entry_title %>" maxlength="100">
+				<p><span class="char-count">0/100</span></p>
+				<textarea class="form-control char-limited" name="text" id="text" rows="3" maxlength="2000"><%= entry.raw_text %></textarea> <!-- text edit area-->
+				<p><span class="char-count">0/2000</span></p>
 				<a class="btn btn-primary btn-sm" href="/home">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-sm">Save</button>
 				<input type="hidden" name="id" value="<%= entry.entry_id %>"> <!--  pass entry ID as hidden -->
@@ -23,6 +25,18 @@
 		</form>
         <% }) %>
         
+	<script>
+		//character counter
+		const inputs = document.querySelectorAll('.char-limited');
+		inputs.forEach(input => {
+			const charCount = input.nextElementSibling.querySelector('.char-count');
+			input.addEventListener('input', () => {
+			const count = input.value.length;
+			const max = input.maxLength;
+			charCount.innerText = `${count}/${max}`;
+			});
+		});
+	</script>
   </div>
 </main>
 
