@@ -172,7 +172,6 @@ app.get('/opennote', (req, res) => {
     });
 });
 
-
 app.get("/createnewjournal", (req, res) => {
   res.render("pages/createnewjournal");
 })
@@ -283,8 +282,6 @@ app.post('/updatenote', function (req, res) {
     });
 });
 
-// DELETE FROM table_name
-//WHERE condition;
 // Save an edited note - update the text in the database
 app.get('/deletenote', function (req, res) {
   var id = req.query.id;
@@ -301,7 +298,6 @@ app.get('/deletenote', function (req, res) {
       });
     });
 });
-
 
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
