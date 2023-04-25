@@ -13,7 +13,8 @@
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
 				        <p class="card-text"><%= entry.raw_text %></p>
-				        <a href="/opennote?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Open</a>
+				        <a href="/deletenote?id=<%= entry.entry_id %>" class="btn btn-danger btn-sm">Delete</a>
+                <a href="/opennote?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Open</a>
                 <a href="/edit?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
 			      </div>
 		      </div>

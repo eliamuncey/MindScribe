@@ -283,6 +283,25 @@ app.post('/updatenote', function (req, res) {
     });
 });
 
+// DELETE FROM table_name
+//WHERE condition;
+// Save an edited note - update the text in the database
+app.get('/deletenote', function (req, res) {
+  var id = req.query.id;
+  const query = 'DELETE FROM entries WHERE entry_id = $1;';
+  db.any(query, [id])
+    .then(function (data) {
+      res.redirect('/home');   // go to the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while deleting the note',
+      });
+    });
+});
+
 
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
