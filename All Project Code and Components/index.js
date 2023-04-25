@@ -247,9 +247,9 @@ app.get('/journal', (req, res) => {
 
 // Get the entry from the database then ender the edit page with the contents of the entry
 app.get('/edit', (req, res) => {
-  var id = req.query.id;
+  var id = req.query.id;  // get the ID from the ID query parmater in the URL
   const query = "SELECT * FROM entries where entry_id = $1;"; // SQL query to retrieve all entries
-  db.any(query, [id])
+  db.any(query, [id]) 
     .then(function (data) {
       res.render('pages/edit', {results: data}); // Pass the 'data' to the 'results' variable in the home page
     })

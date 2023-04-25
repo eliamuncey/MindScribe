@@ -13,8 +13,11 @@
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
 				        <p class="card-text"><%= entry.raw_text %></p>
-				        <a href="/deletenote?id=<%= entry.entry_id %>" class="btn btn-danger btn-sm">Delete</a>
+				        <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
+                <a href="/deletenote?id=<%= entry.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
+                <!-- Button to open an entry; pass the ID on the URL as a query parameter -->
                 <a href="/opennote?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Open</a>
+                <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
                 <a href="/edit?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
 			      </div>
 		      </div>
