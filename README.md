@@ -11,10 +11,12 @@ Jared Roberts<br>
 <h2>Technology Stack</h2>
 <img src="All Project Code and Components/images/tech stack.png" height="500">
 <h2>Application Prerequisites</h2>
-<p>To-Do</p>
+<p>To run the application, you must install Docker. Our application uses Docker containers to function.</p>
 <h2>Use Instructions</h2>
-<p>To-Do</p>
+<p>To run the application locally, start up a docker container by typing 'docker-compose up' in the terminal. Then, navigate to 'localhost:3000' in your browser to access the application locally.</p>
 <h2>Test Instructions</h2>
-<p>To-Do</p>
+<p>To test the application, ensure that in the file 'package.json' within the "scripts" the function "testandrun" is set as follows: 
+"testandrun": "npm run prestart && npm run test && npm run start"
+This will ensure that the application will run all test cases properly, as well as start up correctly.</p>
 <h2>Application Access</h2>
-<p>To-Do</p>
+<p>The application is currently not deployed. The application will be deployed by the final release.</p>
