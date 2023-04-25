@@ -1,0 +1,11 @@
+TODO
+Update project board 
+Try to create release notes for week 1 and week 2 by the end of week 2. 
+Go through grading rubric in project guide 
+Each person creating a user story should create their own branch and implement it and then commit it to main. 
+Scribe should record commits of each person weekly. 
+For this week, each person should work on one user story. 
+
+Two separate folders for TA meetings and the meetings among group members. 
+
+Overall goal is to get a barebones journal application with a 

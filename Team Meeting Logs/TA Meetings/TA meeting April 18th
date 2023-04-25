@@ -1,0 +1,29 @@
+Project Board
+-Update user stories with description
+-user acceptance criteria
+-Add more user stories 
+-Create better epics 
+-Update who is working on each story
+-Update project board frequently
+-Move finished stories to completed
+
+Repository
+-Add release notes 
+-Update release notes and upload meeting Update
+-TA meeting notes to github repository
+-Each member needs to have multiple commits
+-Commit often
+
+Group main points
+-Focus on updating notes functionality
+-Add ability to delete notes
+-Add ability to edit previous notes
+-Add ability to create multiple journals 
+-Fix Journal and Notes Display
+-Create function for AI API to format a given text
+-creating function AI emotion reading from journal entries
+-Work on notes display 
+-Work on journal display
+-Add work count/ limit to journals and notes
+-Next meeting is on Sunday night
+
