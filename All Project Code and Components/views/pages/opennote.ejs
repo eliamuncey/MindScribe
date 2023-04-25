@@ -17,10 +17,15 @@
             <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder=" " readonly><%= item.raw_text %></textarea>
           </div>
   
-          <%# Edit Button %>
+          <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
+          <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
+          <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
+          <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
+
+          <!-- <%# Edit Button %>
           <div class="mt-3 text-center">
             <button id="edit-note" class="btn btn-primary">Edit Note</button>
-          </div>
+          </div> -->
           <%# Format Button %>
           <div class="mt-3 text-center">
           <button id="Format-note" onclick="submitParagraph()">Format Note</button>
