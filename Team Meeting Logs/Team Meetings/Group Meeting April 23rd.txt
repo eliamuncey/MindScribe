@@ -1,0 +1,20 @@
+Project Board
+-Add more user stories 
+-Move finished stories to completed
+
+Repository
+-Add release notes 
+-Update release notes and upload meeting Update
+-TA meeting notes to github repository
+-Each member needs to have multiple commits
+
+Group main points
+-Add ability to delete notes
+-Add ability to edit previous notes
+-Create function for AI API to format a given text
+-creating function AI emotion reading from journal entries
+-Work on journal display
+-Add work count/ limit to journals and notes
+-Next meeting is on Tuesday 11:30 am
+-Focus on making notes editing work before we start working on AI Manipulation
+-Jared will start the ChatGPT API formatting and mood detection
