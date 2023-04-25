@@ -1,0 +1,33 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+
+<main>
+  <div class="container">
+    <br>
+    <h1>Edit</h1>
+    <br>
+        <form action="/updatenote" method="post"> 
+   	    <div class="row row-cols-3 row-cols-md-3 g-4">
+        <% results.forEach(function(entry) { %>
+		<div class="col">
+        <div class="card" style="width: 18rem;">
+			<div class="card-body">
+				<p><input name="title" id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" value="<%= entry.entry_title %>"></p>
+				<p><textarea class="form-control" name="text" id="text" rows="3"><%= entry.raw_text %></textarea></p>
+				<a class="btn btn-primary btn-sm" href="/home">Cancel</a>
+				<button type="submit" class="btn btn-primary btn-sm">Save</button>
+				<input type="hidden" name="id" value="<%= entry.entry_id %>">
+			</div>
+		</div>
+		</div>
+		</form>
+        <% }) %>
+        
+  </div>
+</main>
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>
+
+

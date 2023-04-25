@@ -156,7 +156,8 @@ app.post('/savenote', function (req, res) {
 });
 
 app.get('/opennote', (req, res) => { 
-  const entryId = req.query['entry-id'];
+  // const entryId = req.query['entry-id'];
+  var entryId = req.query.id;
   const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
   db.any(query, [entryId])
     .then(function (data) {
@@ -243,6 +244,46 @@ app.get('/journal', (req, res) => {
     });
 });
 */
+
+// Get the entry from the database then ender the edit page with the contents of the entry
+app.get('/edit', (req, res) => {
+  var id = req.query.id;
+  const query = "SELECT * FROM entries where entry_id = $1;"; // SQL query to retrieve all entries
+  db.any(query, [id])
+    .then(function (data) {
+      res.render('pages/edit', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
+});
+
+// Save an edited note - update the text in the database
+app.post('/updatenote', function (req, res) {
+  const query =
+    'UPDATE entries SET entry_title = $1, raw_text = $2 where entry_id = $3;';
+  db.any(query, [
+  	req.body.title,
+    req.body.text,
+    req.body.id
+  ])
+    .then(function (data) {
+      res.redirect('/home');   // go to the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while saving the note',
+      });
+    });
+});
+
+
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
