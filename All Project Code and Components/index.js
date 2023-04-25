@@ -131,10 +131,11 @@ app.get("/createnewnote", (req, res) => {
 
 app.post('/savenote', function (req, res) {
   const query =
-    'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+    'INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
   db.any(query, [
     req.body.entry_title,
-    req.body.raw_text
+    req.body.raw_text,
+    req.body.journal_id
   ])
     .then(function (data) {
       res.status(200).json({
@@ -169,19 +170,29 @@ app.get('/opennote', (req, res) => {
 });
 
 app.get('/openjournal', (req, res) => { 
-  const journalId = req.query['journal-id'];
-  const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
-  db.any(query, [entryId])
-    .then(function (data) {
-      res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
-    })
-    .catch(function (err) {
-      console.error(err);
-      res.status(500).json({
-        status: 'error',
-        message: 'An error occurred while fetching notes',
+  // Fetch query parameters from the request object
+  var journal = req.query['journal-id'];
+
+  // Multiple queries using templated strings
+  var current_journal = `select * from journals where journal_id = '${journal}';`;
+  var entries = `select * from entries where journal_id = '${journal}';`;
+
+  db.task('get-data', task => {
+    return task.batch([task.one(current_journal), task.any(entries)]);
+  })
+  .then(function (data) {
+    res.render('pages/openjournal', {
+      journal: data[0],
+      entries: data[1],
       });
+  })
+  .catch(function (err) {
+    console.error(err);
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while fetching journal',
     });
+  });
 });
 
 app.get("/createnewjournal", (req, res) => {

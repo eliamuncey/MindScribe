@@ -1,0 +1,29 @@
+<%- include('../partials/head') %>
+<%- include('../partials/menu') %>
+
+<main>
+    <div class="container">
+        <br>
+        <h1><%= journal.journal_title %></h1>    
+        <br>
+        <div class="row">
+            <%if(entries){
+              var card = "";
+              entries.forEach(function(entry){
+                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
+                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
+                card += '</h5><p class="card-text">Date: ' + entry.entry_date;
+                card += '<br>Summary: ' + entry.summary_text;
+                card += '</p><form action="/opennote"><input type="hidden" name="entry-id" value="' + entry.entry_id + '">'; 
+                card += '<button type="submit" class="btn btn-primary stretched-link">View/Edit</button></form></div></div></div>'; 
+              });
+            }%>
+            <%- card %>
+          </div>
+    </div>    
+</main>
+  
+
+  <%- include('../partials/message') %>
+  <%- include('../partials/footer') %>
+

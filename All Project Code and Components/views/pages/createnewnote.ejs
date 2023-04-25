@@ -41,7 +41,8 @@
           },
           body: JSON.stringify({ //converts data to json strings
             entry_title: title,
-            raw_text: content
+            raw_text: content,
+            journal_id: 1,
           })
         })
         .then(function(response) {
