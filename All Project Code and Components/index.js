@@ -9,6 +9,9 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+//const openai = new OpenAIApi(new Configuration({
+// apiKey: process.env.API_Key
+//}))
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -225,7 +228,21 @@ app.get('/journal', (req, res) => {
       });
     });
 });
-
+/*app.get('/format', (req, res) => { 
+  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
+  db.any(query)
+    .then(function (data) {
+      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while trying to format',
+      });
+    });
+});
+*/
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
