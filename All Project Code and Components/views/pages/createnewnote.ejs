@@ -13,14 +13,17 @@
           <li><a class="dropdown-item" href="#">Example Journal 2</a></li>
           <li><a class="dropdown-item" href="#">Example Journal 3</a></li>
         </ul>
-        <input id="note-title" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Enter Title">
+        <input id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" placeholder="Enter Title" maxlength="100">
+        <p><span class="char-count">0/100</span></p>
       </div>
       <br>
 
       <%# Note Entry %>
       <div class="input-group">
-        <textarea id="note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note"></textarea>
+        <textarea id="note-text" class="form-control char-limited" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note" maxlength="2000"></textarea>
+        <p><span class="char-count">0/2000</span></p>
       </div>
+
 
       <%# Save Button %>
       <div class="mt-3 text-center">
@@ -28,69 +31,81 @@
       </div>
       <%# Format Button %>
       <div class="mt-3 text-center">
-        <button id="Format-note" onclick="submitParagraph()">Format Note</button>
+        <button class="btn btn-primary" id="Format-note" onclick="submitParagraph()">Format Note</button>
       <script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
       <script>
         var saveNoteButton = document.querySelector('#save-note'); 
         saveNoteButton.addEventListener('click', function() { //on click of Save Note
-        var title = document.querySelector('#note-title').value.trim(); //gets title
-          var content = document.querySelector('#note-text').value.trim(); //gets text
-          fetch('/savenote', { //calls /savenote and passes note info
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json' //data in json form so it can be parsed by API call
-          },
-          body: JSON.stringify({ //converts data to json strings
-            entry_title: title,
-            raw_text: content,
-            journal_id: 1,
+          var title = document.querySelector('#note-title').value.trim(); //gets title
+            var content = document.querySelector('#note-text').value.trim(); //gets text
+            fetch('/savenote', { //calls /savenote and passes note info
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json' //data in json form so it can be parsed by API call
+            },
+            body: JSON.stringify({ //converts data to json strings
+              entry_title: title,
+              raw_text: content,
+              journal_id: 1,
+            })
           })
-        })
-        .then(function(response) {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('An error occurred while saving the note');
-          }
-        })
-        .then(function(data) {
-          console.log(data);
-          alert('Note saved successfully');
-        })
-        .catch(function(err) {
-          console.error(err);
-          alert(err.message);
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('An error occurred while saving the note');
+            }
+          })
+          .then(function(data) {
+            console.log(data);
+            alert('Note saved successfully');
+          })
+          .catch(function(err) {
+            console.error(err);
+            alert(err.message);
+          });
         });
-      });
-      const apiKey = '';
-    
-    // initialize the API client
-    var openai = new OpenAI(apiKey);
-    
-    function submitParagraph() {
-      // get the input paragraph
-      var inputParagraph = document.querySelector('#note-text');
+
+        //character counter
+        const inputs = document.querySelectorAll('.char-limited');
+        inputs.forEach(input => {
+          const charCount = input.nextElementSibling.querySelector('.char-count');
+          input.addEventListener('input', () => {
+            const count = input.value.length;
+            const max = input.maxLength;
+            charCount.innerText = `${count}/${max}`;
+          });
+        });
+
+        const apiKey = '';
       
-      // call the OpenAI API to format the paragraph
-      openai.complete({
-        engine: 'davinci',
-        prompt: `format and correct any spelling in the following text:\n\n${inputParagraph}\n\n`,
-        maxTokens: 2048,
-        temperature: 0.5,
-        n: 1,
-        stream: false,
-      }).then(response => {
-        // get the formatted paragraph from the API response
-        var formattedParagraph = response.data.choices[0].text;
+        // initialize the API client
+        var openai = new OpenAI(apiKey);
         
-        // display the formatted paragraph
-        document.querySelector('#note-text') = formattedParagraph;
-      }).catch(error => {
-        console.error(error);
-        alert('An error occurred while formatting the paragraph.');
-      });
-    }
-    </script>
+        function submitParagraph() {
+          // get the input paragraph
+          var inputParagraph = document.querySelector('#note-text');
+          
+          // call the OpenAI API to format the paragraph
+          openai.complete({
+            engine: 'davinci',
+            prompt: `format and correct any spelling in the following text:\n\n${inputParagraph}\n\n`,
+            maxTokens: 2048,
+            temperature: 0.5,
+            n: 1,
+            stream: false,
+          }).then(response => {
+            // get the formatted paragraph from the API response
+            var formattedParagraph = response.data.choices[0].text;
+            
+            // display the formatted paragraph
+            document.querySelector('#note-text') = formattedParagraph;
+          }).catch(error => {
+            console.error(error);
+            alert('An error occurred while formatting the paragraph.');
+          });
+        }
+      </script>
     </body>
   </div>
 </main>
