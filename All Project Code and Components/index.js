@@ -223,16 +223,16 @@ app.post('/savejournal', function (req, res) {
 });
 
 app.get('/home', (req, res) => {
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all entries
+  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
   db.any(query)
     .then(function (data) {
-      res.render('pages/home', {journals: data}); // Pass the 'data' to the 'results' variable
+      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
     })
     .catch(function (err) {
       console.error(err);
       res.status(500).json({
         status: 'error',
-        message: 'An error occurred while fetching journals',
+        message: 'An error occurred while fetching entries',
       });
     });
 });

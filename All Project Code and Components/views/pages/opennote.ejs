@@ -6,10 +6,12 @@
       <br>
       <% if (entry) { %>
         <% entry.forEach(function (item) { %>
-          <%# Title Entry %>
-          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+          <%# Journal Selection Dropdown and Title Entry (To-Do)%>
+          <div class="input-group mb-3">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" placeholder="No Journal" readonly>Example Journal</button>
+            <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+          </div>
           <br>
-  
           <%# Note Entry %>
           <div class="input-group">
             <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder=" " readonly><%= item.raw_text %></textarea>

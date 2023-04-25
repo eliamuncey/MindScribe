@@ -31,25 +31,6 @@
             <% }) %>
           <% } %>
         </div>
-        <!--<div class="row">
-          <% var card = '<div class="col-md-4"><div class="card" style="width: 18rem;">' +
-            '<div class="card-body"><h5 class="card-title">All Journal Entries</h5>' +
-            '<form action="/home"><button type="submit" class="btn btn-primary">Open Journal</button></form>' +
-            '<p style="color:gray; font-size: 12px">All entries are within this journal</p></div></div>'; %>
-            <%if(journals){
-              journals.forEach(function(journal){
-                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
-                card += '<div class="card-body"><h5 class="card-title">' + journal.journal_title;
-                card += '<form action="/openjournal">' +
-                  '<input type="hidden" name="journal-id" value=' + journal.journal_id + '>' +
-                  '<button type="submit" class="btn btn-primary">Open Journal</button>' +
-                  '</form>';
-                card += '<p style="color:gray; font-size: 12px">' + journal.journal_description;
-                card += '</p></div></div>';
-              });
-            }%>
-            <%- card %>
-          </div> -->
     </div>
 </main>
 
