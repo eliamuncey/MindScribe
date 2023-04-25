@@ -155,6 +155,7 @@ app.post('/savenote', function (req, res) {
     });
 });
 
+
 app.get('/opennote', (req, res) => { 
   // const entryId = req.query['entry-id'];
   var entryId = req.query.id;
