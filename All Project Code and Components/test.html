@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatGPT API Example</title>
+</head>
+<body>
+  <h1>ChatGPT API Example</h1>
+  <textarea id="input-paragraph" rows="10" cols="50"></textarea>
+  <button id="submit-button" onclick="submitParagraph()">Submit</button>
+  <hr />
+  <div id="output-paragraph"></div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
+  <script>
+    // replace with your API key
+    const apiKey = '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';
+    
+    // initialize the API client
+    const openai = new OpenAI(apiKey);
+    
+    function submitParagraph() {
+      // get the input paragraph
+      const inputParagraph = document.getElementById('input-paragraph').value;
+      
+      // call the OpenAI API to format the paragraph
+      openai.complete({
+        engine: 'davinci',
+        prompt: `format the following paragraph:\n\n${inputParagraph}\n\n`,
+        maxTokens: 2048,
+        temperature: 0.5,
+        n: 1,
+        stream: false,
+      }).then(response => {
+        // get the formatted paragraph from the API response
+        const formattedParagraph = response.data.choices[0].text;
+        
+        // display the formatted paragraph
+        document.getElementById('output-paragraph').innerHTML = formattedParagraph;
+      }).catch(error => {
+        console.error(error);
+        alert('An error occurred while formatting the paragraph.');
+      });
+    }
+  </script>
+</body>
+</html>
