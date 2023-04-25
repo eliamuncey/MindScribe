@@ -6,12 +6,14 @@
     <body>
       <br>
       <%# Journal Title Entry%>
-      <input id="journal-title" type="text" class="form-control" aria-label="Text input" placeholder="Journal Title">
+      <input id="journal-title" type="text" class="form-control char-limited" aria-label="Text input" placeholder="Journal Title" maxlength="100">
+      <p><span class="char-count">0/100</span></p>
       <br>
 
       <%# Journal Description Entry %>
       <div class="input-group">
-        <textarea id="journal-description" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder="Journal Description"></textarea>
+        <textarea id="journal-description" class="form-control char-limited" aria-label="With textarea" style="height: 400px;" placeholder="Journal Description" maxlength="200"></textarea>
+        <p><span class="char-count">0/200</span></p>
       </div>
 
       <%# Save Button %>
@@ -50,6 +52,18 @@
           alert(err.message);
         });
       });
+
+      //character counter
+      const inputs = document.querySelectorAll('.char-limited');
+      inputs.forEach(input => {
+        const charCount = input.nextElementSibling.querySelector('.char-count');
+        input.addEventListener('input', () => {
+          const count = input.value.length;
+          const max = input.maxLength;
+          charCount.innerText = `${count}/${max}`;
+        });
+      });
+
     </script>
     </body>
   </div>
