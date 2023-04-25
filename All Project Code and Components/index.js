@@ -134,10 +134,12 @@ app.get("/createnewnote", (req, res) => {
 
 app.post('/savenote', function (req, res) {
   const query =
-    'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+  'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+  // INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
   db.any(query, [
     req.body.entry_title,
-    req.body.raw_text
+    req.body.raw_text,
+    // req.body.journal_id
   ])
     .then(function (data) {
       res.status(200).json({
@@ -156,8 +158,8 @@ app.post('/savenote', function (req, res) {
 });
 
 app.get('/opennote', (req, res) => { 
-  // const entryId = req.query['entry-id'];
-  var entryId = req.query.id;
+  const entryId = req.query['entry-id'];
+  // var entryId = req.query.id;
   const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
   db.any(query, [entryId])
     .then(function (data) {
@@ -170,6 +172,32 @@ app.get('/opennote', (req, res) => {
         message: 'An error occurred while fetching notes',
       });
     });
+});
+
+app.get('/openjournal', (req, res) => { 
+  // Fetch query parameters from the request object
+  var journal = req.query['journal-id'];
+
+  // Multiple queries using templated strings
+  var current_journal = `select * from journals where journal_id = '${journal}';`;
+  var entries = `select * from entries where journal_id = '${journal}';`;
+
+  db.task('get-data', task => {
+    return task.batch([task.one(current_journal), task.any(entries)]);
+  })
+  .then(function (data) {
+    res.render('pages/openjournal', {
+      journal: data[0],
+      entries: data[1],
+      });
+  })
+  .catch(function (err) {
+    console.error(err);
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while fetching journal',
+    });
+  });
 });
 
 app.get("/createnewjournal", (req, res) => {
@@ -209,7 +237,7 @@ app.get('/home', (req, res) => {
       console.error(err);
       res.status(500).json({
         status: 'error',
-        message: 'An error occurred while fetching notes',
+        message: 'An error occurred while fetching entries',
       });
     });
 });
@@ -228,23 +256,8 @@ app.get('/journal', (req, res) => {
       });
     });
 });
-/*app.get('/format', (req, res) => { 
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
-  db.any(query)
-    .then(function (data) {
-      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
-    })
-    .catch(function (err) {
-      console.error(err);
-      res.status(500).json({
-        status: 'error',
-        message: 'An error occurred while trying to format',
-      });
-    });
-});
-*/
 
-// Get the entry from the database then ender the edit page with the contents of the entry
+// Get the entry from the database then enter the edit page with the contents of the entry
 app.get('/edit', (req, res) => {
   var id = req.query.id;  // get the ID from the ID query parmater in the URL
   const query = "SELECT * FROM entries where entry_id = $1;"; // SQL query to retrieve all entries
@@ -322,5 +335,3 @@ app.get("/logout", (req, res) => {
 // starting the server and keeping the connection open to listen for more requests
 module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
-
-

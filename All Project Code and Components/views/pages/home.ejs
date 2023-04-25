@@ -4,7 +4,7 @@
 <main>
   <div class="container">
     <br>
-    <h1>Home</h1>
+    <h1>All Notes</h1>
     <br>
 	    <div class="row row-cols-3 row-cols-md-3 g-4">
         <% entries.forEach(function(entry) { %>
@@ -13,12 +13,10 @@
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
 				        <p class="card-text"><%= entry.raw_text %></p>
-				        <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-                <a href="/deletenote?id=<%= entry.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
-                <!-- Button to open an entry; pass the ID on the URL as a query parameter -->
-                <a href="/opennote?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Open</a>
-                <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-                <a href="/edit?id=<%= entry.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
+                <form action="/opennote">
+                  <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
+                  <button type="submit" class="btn btn-primary">Open Note</button>
+                </form>
 			      </div>
 		      </div>
 		    </div>
@@ -28,5 +26,3 @@
 
 <%- include ('../partials/message') %>
 <%- include ('../partials/footer') %>
-
-

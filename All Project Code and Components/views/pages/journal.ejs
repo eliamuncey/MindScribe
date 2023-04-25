@@ -10,26 +10,27 @@
         <form action="/createnewjournal">
           <button type="submit" class="btn btn-primary">Create New Journal</button>
       </form>
-      
+
         <br>
         <div class="row">
-          <% var card = '<div class="col-md-4"><div class="card" style="width: 18rem;">' +
-            '<div class="card-body"><h5 class="card-title">All Journal Entries</h5>' +
-            '<form action="/home"><button type="submit" class="btn btn-primary">Open Journal</button></form>' +
-            '<p style="color:gray; font-size: 12px">All entries are within this journal</p></div></div>'; %>
-            <%if(journals){
-              journals.forEach(function(journal){
-                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
-                card += '<div class="card-body"><h5 class="card-title">' + journal.journal_title;
-                card += '<form action="/home">' +
-                  '<button type="submit" class="btn btn-primary">Open Journal</button>' +
-                  '</form>';
-                card += '<p style="color:gray; font-size: 12px">' + journal.journal_description;
-                card += '</p></div></div>'; 
-              });
-            }%>
-            <%- card %>
-          </div>
+          <% if(journals) { %>
+            <% journals.forEach(function (journal) { %>
+              <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                  <img src="https://i.pinimg.com/originals/36/cf/33/36cf33fdb1dea05ecb998595aa64e893.png" class="card-img" />
+                  <div class="card-body card-img-overlay text-center">
+                    <br><br>
+                    <form action="/openjournal">
+                      <input type="hidden" name="journal-id" value=<%= journal.journal_id %>>
+                      <button type="submit" class="btn btn-primary-outline stretched-link"><h5 class="card-title"><%= journal.journal_title %></h5></button>
+                    </form>
+                    <p style="color:gray; font-size: 12px"><%= journal.journal_description %></p>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
     </div>
 </main>
 
