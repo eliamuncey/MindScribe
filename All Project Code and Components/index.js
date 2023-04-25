@@ -254,21 +254,7 @@ app.get('/journal', (req, res) => {
       });
     });
 });
-/*app.get('/format', (req, res) => { 
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
-  db.any(query)
-    .then(function (data) {
-      res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
-    })
-    .catch(function (err) {
-      console.error(err);
-      res.status(500).json({
-        status: 'error',
-        message: 'An error occurred while trying to format',
-      });
-    });
-});
-*/
+
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
