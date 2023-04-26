@@ -59,6 +59,7 @@
           .then(function(data) {
             console.log(data);
             alert('Note saved successfully');
+            window.location.href = 'home';
           })
           .catch(function(err) {
             console.error(err);
