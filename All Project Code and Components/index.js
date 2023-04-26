@@ -134,11 +134,16 @@ app.get("/createnewnote", (req, res) => {
 
 app.post('/savenote', function (req, res) {
   const query =
-  'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+  'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
   // INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
+
+  const date = new Date().toISOString();  // get the current date as an ISO string
+
   db.any(query, [
     req.body.entry_title,
     req.body.raw_text,
+    req.session.user.username,
+    date
     // req.body.journal_id
   ])
     .then(function (data) {
