@@ -351,6 +351,23 @@ app.get('/deletenote', function (req, res) {
     });
 });
 
+// Save an edited note - update the text in the database
+app.get('/deletejournal', function (req, res) {
+  var id = req.query.id;
+  const query = 'DELETE FROM journals WHERE journal_id = $1;';
+  db.any(query, [id])
+    .then(function (data) {
+      res.redirect('/journal');   // go to the journal page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while deleting the journal',
+      });
+    });
+});
+
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
