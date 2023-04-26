@@ -46,6 +46,7 @@
         .then(function(data) {
           console.log(data);
           alert('Journal saved successfully');
+          window.location.href = 'journal';
         })
         .catch(function(err) {
           console.error(err);
