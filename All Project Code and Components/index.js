@@ -274,6 +274,24 @@ app.get('/edit', (req, res) => {
     });
 });
 
+// Get the journal entry from the database then enter the edit journal page with the contents of the journal
+app.get('/editjournal', (req, res) => {
+  var id = req.query.id;  // get the ID from the ID query parmater in the URL
+  const query = "SELECT * FROM journals where journal_id = $1;"; // SQL query to retrieve all entries
+  db.any(query, [id]) 
+    .then(function (data) {
+      res.render('pages/editjournal', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while fetching notes',
+      });
+    });
+});
+
+
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
   const query =
@@ -291,6 +309,27 @@ app.post('/updatenote', function (req, res) {
       res.status(500).json({
         status: 'error',
         message: 'An error occurred while saving the note',
+      });
+    });
+});
+
+// Save an edited note - update the text in the database
+app.post('/updatejournal', function (req, res) {
+  const query =
+    'UPDATE journals SET journal_title = $1, journal_description = $2 where journal_id = $3;';
+  db.any(query, [
+  	req.body.title,
+    req.body.description,
+    req.body.id
+  ])
+    .then(function (data) {
+      res.redirect('/journal');   // go to the home page
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).json({
+        status: 'error',
+        message: 'An error occurred while updating the journal',
       });
     });
 });
