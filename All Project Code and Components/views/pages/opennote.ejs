@@ -7,8 +7,12 @@
       <% if (entry) { %>
         <% entry.forEach(function (item) { %>
           <%# Journal Selection Dropdown and Title Entry (To-Do)%>
-          <div class="input-group mb-3">
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" placeholder="No Journal" readonly>Example Journal</button>
+          <div class="input-group mb-3"> 
+          <form>
+            <select id="journal-select">
+                <option class="dropdown-item" href="#"><%= item.journal_title %></option>
+            </select>
+          </form>
             <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
           </div>
           <br>
@@ -21,7 +25,6 @@
           <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
           <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
           <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-
           <!-- <%# Edit Button %>
           <div class="mt-3 text-center">
             <button id="edit-note" class="btn btn-primary">Edit Note</button>
@@ -69,4 +72,3 @@
 
   <%- include('../partials/message') %>
   <%- include('../partials/footer') %>
-
