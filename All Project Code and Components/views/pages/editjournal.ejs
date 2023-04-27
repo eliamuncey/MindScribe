@@ -1,0 +1,42 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <br>
+    <h1>Edit Journal</h1>
+    <br>
+        <form action="/updatejournal" method="post"> <!-- calls /updatenote -->
+   	    <div class="row row-cols-3 row-cols-md-3 g-4"> <!-- use column layout -->
+        <% results.forEach(function(entry) { %>
+		<div class="col"> 
+        <div class="card" style="width: 18rem;">
+			<div class="card-body">
+				Title: <input name="title" id="journal_title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" value="<%= entry.journal_title %>" maxlength="100">
+				<p><span class="char-count">0/100</span></p>				
+				<a class="btn btn-primary btn-sm" href="openjournal?journal-id=<%= entry.journal_id %>">Cancel</a>
+				<button type="submit" class="btn btn-primary btn-sm">Save</button>
+				<input type="hidden" name="id" value="<%= entry.journal_id %>"> <!--  pass entry ID as hidden -->
+			</div>
+		</div>
+		</div>
+		</form>
+        <% }) %>
+        
+	<script>
+		//character counter
+		const inputs = document.querySelectorAll('.char-limited');
+		inputs.forEach(input => {
+			const charCount = input.nextElementSibling.querySelector('.char-count');
+			input.addEventListener('input', () => {
+			const count = input.value.length;
+			const max = input.maxLength;
+			charCount.innerText = `${count}/${max}`;
+			});
+		});
+	</script>
+  </div>
+</main>
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>

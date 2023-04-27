@@ -5,14 +5,14 @@
   <div class="container">
     <body>
       <br>
-      <%# Journal Selection Dropdown and Title Entry (To-Do)%>
+      <%# Journal Selection Dropdown and Title Entry%>
       <div class="input-group mb-3"> 
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Journal</button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Example Journal 1</a></li>
-          <li><a class="dropdown-item" href="#">Example Journal 2</a></li>
-          <li><a class="dropdown-item" href="#">Example Journal 3</a></li>
-        </ul>
+          <select id="journal-select">
+            <option class="dropdown-item" href="#" journal-id="None" journal-title="None">Select Journal</option>
+            <% for (var i = 0; i < journals.length; i++) { %>
+              <option class="dropdown-item" href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
+            <% } %>
+          </select>
         <input id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" placeholder="Enter Title" maxlength="100">
         <p><span class="char-count">0/100</span></p>
       </div>
@@ -28,11 +28,16 @@
       <div class="mt-3 text-center">
         <button id="save-note" class="btn btn-primary">Save Note</button>
       </div>
+
       <script>
         var saveNoteButton = document.querySelector('#save-note'); 
         saveNoteButton.addEventListener('click', function() { //on click of Save Note
           var title = document.querySelector('#note-title').value.trim(); //gets title
-            var content = document.querySelector('#note-text').value.trim(); //gets text
+          var content = document.querySelector('#note-text').value.trim(); //gets text
+          var select = document.getElementById("journal-select");
+          var value = select.options[select.selectedIndex].getAttribute("journal-id");
+          if (value == "None") //if no journal is selected
+          {
             fetch('/savenote', { //calls /savenote and passes note info
             method: 'POST',
             headers: {
@@ -41,7 +46,6 @@
             body: JSON.stringify({ //converts data to json strings
               entry_title: title,
               raw_text: content,
-              journal_id: 1,
             })
           })
           .then(function(response) {
@@ -54,11 +58,43 @@
           .then(function(data) {
             console.log(data);
             alert('Note saved successfully');
+            window.location.href = 'home';
           })
           .catch(function(err) {
             console.error(err);
             alert(err.message);
           });
+          }
+          else{
+            fetch('/savenote', { //calls /savenote and passes note info
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json' //data in json form so it can be parsed by API call
+            },
+            body: JSON.stringify({ //converts data to json strings
+              entry_title: title,
+              raw_text: content,
+              journal_id: value,
+            })
+          })
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('An error occurred while saving the note');
+            }
+          })
+          .then(function(data) {
+            console.log(data);
+            alert('Note saved successfully');
+            window.location.href = 'home';
+          })
+          .catch(function(err) {
+            console.error(err);
+            alert(err.message);
+            
+          });
+        }
         });
 
         //character counter
@@ -71,6 +107,7 @@
             charCount.innerText = `${count}/${max}`;
           });
         });
+
       </script>
     </body>
   </div>

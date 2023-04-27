@@ -2,66 +2,47 @@
 <%- include('../partials/menu') %>
 
 <main>
-    <div class="container">
-      <br>
-      <% if (entry) { %>
-        <% entry.forEach(function (item) { %>
-          <%# Journal Selection Dropdown and Title Entry (To-Do)%>
-          <div class="input-group mb-3">
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" placeholder="No Journal" readonly>Example Journal</button>
-            <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
-          </div>
-          <br>
-          <%# Note Entry %>
-          <div class="input-group">
-            <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder=" " readonly><%= item.raw_text %></textarea>
-          </div>
-  
-          <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-          <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
-          <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-          <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-          </div>
-          <button id="format-note" class="btn btn-primary btn-sm">Format</button>
-        <% }) %>
-      <% } %>
-    </div>
-    <script>
-      var formatNoteButton = document.querySelector('#format-note'); 
-      formatNoteButton.addEventListener('click', function() { //on click of Save Note
-        var title = document.querySelector('#filled-note-title').value.trim(); //gets title
-          var content = document.querySelector('#filled-note-text').value.trim(); //gets text
-          fetch('/format', { //calls /format and passes note info
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json' //data in json form so it can be parsed by API call
-          },
-          body: JSON.stringify({ //converts data to json strings
-            entry_title: title,
-            raw_text: content,
-            journal_id: 1,
-          })
-        })
-        .then(function(response) {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('An error occurred while formating the note');
-          }
-        })
-        .then(function(data) {
-          console.log(data);
-          alert('Note formated successfully');
-        })
-        .catch(function(err) {
-          console.error(err);
-          alert(err.message);
-        });
-      });
-      </script>
-  </main>
-  
+  <br>
+  <div class="container">
+    <% if (entry) { %>
+      <% entry.forEach(function (item) { %>
+        <%# Journal Selection Dropdown and Title Entry%>
+        <div class="input-group mb-3"> 
+        <% if (item.journal_title == null) { %>
+            <select id="journal-select-nojournal">
+                <option class="dropdown-item" href="#">No Journal</option>
+            </select>
+        <% } else { %>
+            <select id="journal-select">
+                <option class="dropdown-item" href="#"><%= item.journal_title %></option>
+            </select>
+        <% } %>
 
-  <%- include('../partials/message') %>
-  <%- include('../partials/footer') %>
+          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+        </div>
+        <br>
+        <%# Note Entry %>
+        <div class="input-group">
+          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
+        </div>
+        <%# Format Button: Passes in entry_id %>
+        <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format Note</button>
+        <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
+        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
+        <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
+        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete<a> 
+      <% }) %>
+    <% } %>
+  </div>
+</main>
 
+<%- include('../partials/message') %>
+<%- include('../partials/footer') %>
+
+<script>
+function formatNote(entryId) {
+  var content = document.querySelector('#filled-note-text').value.trim(); //gets raw_text
+  console.log('Content:', content);
+  console.log('Entry ID:', entryId);
+}
+</script>

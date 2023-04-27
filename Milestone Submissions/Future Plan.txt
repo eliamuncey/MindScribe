@@ -1,0 +1,21 @@
+﻿By April 27th:
+-Finish Chat GPT Formatting button (MAIN PRIORITY)*******
+-Finish Connecting Notes with Journals
+-Finish Note Tags
+-Finish Adding Character Count to Notes and Journals
+-Ready for launch on Thursday
+
+
+By May 1:
+-Finish front end clean up 
+- Makes Journals Aesthetically pleasing 
+- Makes Notes Aesthetically pleasing 
+- Add User verification
+- Profile Page
+-
+
+
+ICEBOX:
+-FINISH AI Mood Tracking implementation
+-Finish Calender Implementation
+-Associate Mood from Journals With Calender Journal inputs
