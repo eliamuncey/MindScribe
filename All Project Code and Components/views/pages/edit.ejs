@@ -22,21 +22,6 @@
 			</div>
 		</div>
 		</div>
-		</form>
-        <% }) %>
-        
-	<script>
-		//character counter
-		const inputs = document.querySelectorAll('.char-limited');
-		inputs.forEach(input => {
-			const charCount = input.nextElementSibling.querySelector('.char-count');
-			input.addEventListener('input', () => {
-			const count = input.value.length;
-			const max = input.maxLength;
-			charCount.innerText = `${count}/${max}`;
-			});
-		});
-	</script>
   </div>
 </main>
 

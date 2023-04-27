@@ -74,13 +74,44 @@ const openai = new OpenAIApi(configuration);
 async function runCompletion() {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: "How are you today?",
+    prompt: "Hi ChatGPT how are you today?",
   });
 
   console.log(completion.data.choices[0].text);
 }
 
 runCompletion();
+
+app.post('/format', function (req, res) {
+//  const query =
+//  'INSERT INTO entries (entry_title, raw_text) VALUES ($1, $2) RETURNING *;';
+  // INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
+// db.any(query, [
+ //   req.body.entry_title,
+//    req.body.raw_text,
+    // req.body.journal_id
+ //])
+    (function (data) {
+      const completion = openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: "Hi ChatGPT are you there?",
+      })
+      console.log(completion.data.choices[0].text);
+      res.status(200).json({
+        status: 'success',
+        data: data,
+        message: 'Note formatted successfully'
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(400).json({
+        status: 'error',
+        message: 'An error occurred while saving the note'
+      });
+    });
+});
+
 
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});

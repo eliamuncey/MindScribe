@@ -22,9 +22,43 @@
           <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
           <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
           </div>
+          <button id="format-note" class="btn btn-primary btn-sm">Format</button>
         <% }) %>
       <% } %>
     </div>
+    <script>
+      var formatNoteButton = document.querySelector('#format-note'); 
+      formatNoteButton.addEventListener('click', function() { //on click of Save Note
+        var title = document.querySelector('#filled-note-title').value.trim(); //gets title
+          var content = document.querySelector('#filled-note-text').value.trim(); //gets text
+          fetch('/format', { //calls /format and passes note info
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' //data in json form so it can be parsed by API call
+          },
+          body: JSON.stringify({ //converts data to json strings
+            entry_title: title,
+            raw_text: content,
+            journal_id: 1,
+          })
+        })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('An error occurred while formating the note');
+          }
+        })
+        .then(function(data) {
+          console.log(data);
+          alert('Note formated successfully');
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert(err.message);
+        });
+      });
+      </script>
   </main>
   
 
