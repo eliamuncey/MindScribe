@@ -9,9 +9,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
-//const openai = new OpenAIApi(new Configuration({
-// apiKey: process.env.API_Key
-//}))
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -128,14 +125,28 @@ const auth = (req, res, next) => {
 // Authentication Required
 app.use(auth);
 
-app.get("/createnewnote", (req, res) => {
-  res.render("pages/createnewnote");
-})
+app.get('/createnewnote', function (req, res) {
+  const query =
+    'SELECT * FROM journals;';
+  db.any(query)
+    .then(function (data) {
+      res.render('pages/createnewnote', {
+        journals: data
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(400).json({
+        status: 'error',
+        message: 'An error occurred while creating a new note'
+      });
+    });
+});
 
 app.post('/savenote', function (req, res) {
   const query =
-  'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
-  // INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
+  // 'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
+  'INSERT INTO entries (entry_title, raw_text, username, entry_date, journal_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
 
   const date = new Date().toISOString();  // get the current date as an ISO string
 
@@ -143,8 +154,8 @@ app.post('/savenote', function (req, res) {
     req.body.entry_title,
     req.body.raw_text,
     req.session.user.username,
-    date
-    // req.body.journal_id
+    date,
+    req.body.journal_id
   ])
     .then(function (data) {
       res.status(200).json({
@@ -164,8 +175,8 @@ app.post('/savenote', function (req, res) {
 
 app.get('/opennote', (req, res) => { 
   const entryId = req.query['entry-id'];
-  // var entryId = req.query.id;
-  const query = 'SELECT * FROM entries WHERE entry_id = $1'; // SQL query to retrieve entry with correct entry_id
+  const query = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1'; 
+  // SQL query to retrive journal info from correct entry_id, LEFT JOIN for entries without a journal_id
   db.any(query, [entryId])
     .then(function (data) {
       res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
@@ -265,10 +276,16 @@ app.get('/journal', (req, res) => {
 // Get the entry from the database then enter the edit page with the contents of the entry
 app.get('/edit', (req, res) => {
   var id = req.query.id;  // get the ID from the ID query parmater in the URL
-  const query = "SELECT * FROM entries where entry_id = $1;"; // SQL query to retrieve all entries
-  db.any(query, [id]) 
+  const entryQuery = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1';
+  const journalQuery = 'SELECT * FROM journals;';
+  db.task(function (t) {
+    return t.batch([
+      t.any(entryQuery, [id]), // execute the entryQuery and pass the entry_id parameter
+      t.any(journalQuery), // execute the journalQuery
+    ]);
+  })
     .then(function (data) {
-      res.render('pages/edit', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+      res.render('pages/edit', {results: data[0], journals: data[1]}); // Pass the 'data' to the 'results' variable and 'journals' to the 'journals' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -278,6 +295,7 @@ app.get('/edit', (req, res) => {
       });
     });
 });
+
 
 // Get the journal entry from the database then enter the edit journal page with the contents of the journal
 app.get('/editjournal', (req, res) => {
@@ -299,13 +317,21 @@ app.get('/editjournal', (req, res) => {
 
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
-  const query =
-    'UPDATE entries SET entry_title = $1, raw_text = $2 where entry_id = $3;';
-  db.any(query, [
-  	req.body.title,
-    req.body.text,
-    req.body.id
+  const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1;';
+  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null where entry_id = $3;';
+  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3 where entry_id = $4;';
+  if(req.body.journal_title != "No Journal") {
+  db.one(journalQuery, [
+    req.body.journal_title
   ])
+  .then(function (data){
+    db.any(updateQuery, [
+      req.body.title,
+      req.body.text,
+      data.journal_id,
+      req.body.id
+    ])
+  })
     .then(function (data) {
       res.redirect('/home');   // go to the home page
     })
@@ -315,7 +341,25 @@ app.post('/updatenote', function (req, res) {
         status: 'error',
         message: 'An error occurred while saving the note',
       });
-    });
+    })
+  }
+  else {
+      db.any(noJournalQuery, [
+        req.body.title,
+        req.body.text,
+        req.body.id
+      ])
+      .then(function (data) {
+        res.redirect('/home');   // go to the home page
+      })
+      .catch(function (err) {
+        console.error(err);
+        res.status(500).json({
+          status: 'error',
+          message: 'An error occurred while saving the note',
+        });
+      });
+  }
 });
 
 // Save an edited note - update the text in the database
@@ -356,14 +400,15 @@ app.get('/deletenote', function (req, res) {
     });
 });
 
-// Save an edited note - update the text in the database
-app.get('/deletejournal', function (req, res) {
+app.get('/deletejournal', function (req, res) { //delete journal
   var id = req.query.id;
-  const query = 'DELETE FROM journals WHERE journal_id = $1;';
-  db.any(query, [id])
-    .then(function (data) {
-      res.redirect('/journal');   // go to the journal page
-    })
+  const updateQuery ='UPDATE entries SET journal_id = null WHERE journal_id = $1;';
+  const deleteQuery ='DELETE FROM journals WHERE journal_id = $1;';
+  db.task(async (t) => {
+    await t.none(updateQuery, [id]); // Update all entries with journal_id = null
+    await t.none(deleteQuery, [id]); // Delete journal
+    res.redirect('/journal'); // Redirect to journal page
+  })
     .catch(function (err) {
       console.error(err);
       res.status(500).json({

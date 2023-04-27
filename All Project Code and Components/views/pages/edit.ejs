@@ -2,29 +2,40 @@
 <%- include ('../partials/menu') %>
 
 <main>
+	<br>
   <div class="container">
-    <br>
-    <h1>Edit</h1>
-    <br>
         <form action="/updatenote" method="post"> <!-- calls /updatenote -->
-   	    <div class="row row-cols-3 row-cols-md-3 g-4"> <!-- use column layout -->
         <% results.forEach(function(entry) { %>
-		<div class="col"> 
-        <div class="card" style="width: 18rem;">
-			<div class="card-body">
+			<div class="input-group mb-3"> 
+			<% if (entry.journal_title == null) { %>
+				<select id="journal-select" name="journal_title">
+					<option class="dropdown-item" href="#" journal-id="None" journal-title="None">No Journal</option>
+					<% for (var i = 0; i < journals.length; i++) { %>
+					  <option class="dropdown-item" href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
+					<% } %>
+				  </select>
+			  <% } else { %>
+				<select id="journal-select" name="journal_title">
+					<option class="dropdown-item" href="#" journal-id="entry.journal_id" journal-title="<%= entry.journal_title %>"><%= entry.journal_title %></option>
+					<option class="dropdown-item" href="#" journal-id="None" journal-title="None">No Journal</option>
+					<% for (var i = 0; i < journals.length; i++) { %>
+					  <option class="dropdown-item" href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
+					<% } %>
+				  </select>
+			  <% } %>
 				<input name="title" id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" value="<%= entry.entry_title %>" maxlength="100">
 				<p><span class="char-count">0/100</span></p>
-				<textarea class="form-control char-limited" name="text" id="text" rows="3" maxlength="2000"><%= entry.raw_text %></textarea> <!-- text edit area-->
+				</div>
+				<br>
+				<div class="input-group">
+				<textarea class="form-control char-limited" name="text" id="text" style="height: 400px;" maxlength="2000"><%= entry.raw_text %></textarea> <!-- text edit area-->
 				<p><span class="char-count">0/2000</span></p>
+				</div>
 				<a class="btn btn-primary btn-sm" href="/home">Cancel</a>
 				<button type="submit" class="btn btn-primary btn-sm">Save</button>
 				<input type="hidden" name="id" value="<%= entry.entry_id %>"> <!--  pass entry ID as hidden -->
-			</div>
-		</div>
-		</div>
 		</form>
         <% }) %>
-        
 	<script>
 		//character counter
 		const inputs = document.querySelectorAll('.char-limited');
