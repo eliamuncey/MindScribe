@@ -6,13 +6,24 @@
       <br>
       <% if (entry) { %>
         <% entry.forEach(function (item) { %>
-          <%# Journal Selection Dropdown and Title Entry (To-Do)%>
+          <% console.log('journal_id:', item.journal_id) %>
+          <% console.log('journal_title:', item.journal_title) %>
+          <%# Journal Selection Dropdown and Title Entry%>
           <div class="input-group mb-3"> 
-          <form>
-            <select id="journal-select">
-                <option class="dropdown-item" href="#"><%= item.journal_title %></option>
-            </select>
-          </form>
+          <% if (item.journal_title == null) { %>
+            <form>
+              <select id="journal-select-nojournal">
+                  <option class="dropdown-item" href="#">No Journal</option>
+              </select>
+            </form>
+          <% } else { %>
+            <form>
+              <select id="journal-select">
+                  <option class="dropdown-item" href="#"><%= item.journal_title %></option>
+              </select>
+            </form>
+          <% } %>
+
             <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
           </div>
           <br>
@@ -25,43 +36,6 @@
           <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
           <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
           <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-          <!-- <%# Edit Button %>
-          <div class="mt-3 text-center">
-            <button id="edit-note" class="btn btn-primary">Edit Note</button>
-          </div> -->
-          <%# Format Button %>
-          <div class="mt-3 text-center">
-          <button id="Format-note" onclick="submitParagraph()">Format Note</button>
-            <script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
-          <script>
-            const apiKey = '';
-    
-    // initialize the API client
-    const openai = new OpenAI(apiKey);
-    
-    function submitParagraph() {
-      // get the input paragraph
-      const inputParagraph = document.querySelector('#note-text');
-      
-      // call the OpenAI API to format the paragraph
-      openai.complete({
-        engine: 'davinci',
-        prompt: `format the following paragraph:\n\n${inputParagraph}\n\n`,
-        maxTokens: 2048,
-        temperature: 0.5,
-        n: 1,
-        stream: false,
-      }).then(response => {
-        // get the formatted paragraph from the API response
-        const formattedParagraph = response.data.choices[0].text;
-        
-        // display the formatted paragraph
-        document.querySelector('#note-text').innerHTML = formattedParagraph;
-      }).catch(error => {
-        console.error(error);
-        alert('An error occurred while formatting the paragraph.');
-      });
-    }
           </script>
           </div>
         <% }) %>

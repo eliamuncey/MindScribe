@@ -9,9 +9,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
-//const openai = new OpenAIApi(new Configuration({
-// apiKey: process.env.API_Key
-//}))
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -178,8 +175,8 @@ app.post('/savenote', function (req, res) {
 
 app.get('/opennote', (req, res) => { 
   const entryId = req.query['entry-id'];
-  // var entryId = req.query.id;
-  const query = 'SELECT entries.*, journals.journal_title FROM entries JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1'; // SQL query to retrieve entry with correct entry_id
+  const query = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1'; 
+  // SQL query to retrive journal info from correct entry_id, LEFT JOIN for entries without a journal_id
   db.any(query, [entryId])
     .then(function (data) {
       res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
