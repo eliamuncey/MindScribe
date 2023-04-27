@@ -4,7 +4,7 @@
 <main>
     <div class="container">
         <br>
-        <h1><%= journal.journal_title %>   
+        <h1><%= journal.journal_title %>  
         <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
         <a href="/deletejournal?id=<%= journal.journal_id %>" class="bi"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
           <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
@@ -16,34 +16,21 @@
         </svg></a></h1> 
         <br/><br/><br/>
 
-        <div class="row">
-          <% if (entries) { %>
-            <% entries.forEach(function (entry) { %>
-              <div class="col-md-4">
-                <div class="card" style="width: 18rem;">
-                  <div class="card-body">
-                    <h5 class="card-title"><%= entry.entry_title %></h5>
-                  </div>
-                </div>
+        <div class="row row-cols-3 row-cols-md-3 g-4">
+          <% entries.forEach(function(entry) { %>
+            <div class="col">
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title"><%= entry.entry_title %></h5>
+                  <p class="card-text"><%= entry.raw_text %></p>
+                  <form action="/opennote">
+                    <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
+                    <button type="submit" class="btn btn-primary">Open Note</button>
+                  </form>
               </div>
-            <% }) %>
-          <% } %>
-        </div>
-        
-        <!-- <div class="row">
-            <%if(entries){
-              var card = "";
-              entries.forEach(function(entry){
-                card += '<div class="col-md-4"><div class="card" style="width: 18rem;">';
-                card += '<div class="card-body"><h5 class="card-title">' + entry.entry_title;
-                card += '</h5><p class="card-text">Date: ' + entry.entry_date;
-                card += '<br>Summary: ' + entry.summary_text;
-                card += '</p><form action="/opennote"><input type="hidden" name="entry-id" value="' + entry.entry_id + '">'; 
-                card += '<button type="submit" class="btn btn-primary stretched-link">View/Edit</button></form></div></div></div>'; 
-              });
-            }%>
-            <%- card %>
-          </div> -->
+            </div>
+          </div>
+          <% }) %>       
     </div>    
 </main>
   

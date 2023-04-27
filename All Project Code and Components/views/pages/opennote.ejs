@@ -6,8 +6,6 @@
       <br>
       <% if (entry) { %>
         <% entry.forEach(function (item) { %>
-          <% console.log('journal_id:', item.journal_id) %>
-          <% console.log('journal_title:', item.journal_title) %>
           <%# Journal Selection Dropdown and Title Entry%>
           <div class="input-group mb-3"> 
           <% if (item.journal_title == null) { %>
