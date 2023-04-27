@@ -8,7 +8,9 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const axios = require('axios'); // To make HTTP requests from our server
+
+const {Configuration, OpenAIApi} = require("openai");
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -57,9 +59,63 @@ app.use(
   })
 );
 
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+//console.log(process.env.OPENAI_API_KEY);
+
+const openai = new OpenAIApi(configuration);
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+
+// async function runCompletion() {
+//   const completion = await openai.createCompletion({
+//     model: "text-davinci-003",
+//     prompt: "Hi ChatGPT how are you today?",
+//   });
+
+//   console.log(completion.data.choices[0].text);
+// }
+
+// runCompletion();
+
+app.post('/format', async function (req, res) { //async function to await for ChatGPT reply
+  const { raw_text, entry_id } = req.body; //seperates data
+  
+  const prompt = `Format the following text using punctuation, capitalization, spacing, and paragraph breaks where appropriate. Correct grammar, typos, and misspellings. Do not remove or add any words. Reply only with the formatted version of the text:\n\n${raw_text}`;
+  
+  const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+    model: "text-davinci-003", //text model being used
+    prompt: prompt, //prompt set above
+    max_tokens: 2048, //max number of word chunks in a single output
+    n: 1, //max number of outputs (only need one)
+  });
+
+  const formatted_text = completion.data.choices[0].text; //pulling out the text of the first choice from data from completion object
+  
+  const updateQuery = 'UPDATE entries SET raw_text = $1 where entry_id = $2;'; //update entry content
+  db.any(updateQuery, [formatted_text, entry_id])
+    .then(function(data){
+      res.status(200).json({
+        status: 'success',
+        data: data,
+        message: 'Note formatted successfully'
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(400).json({
+        status: 'error',
+        message: 'An error occurred while saving the note'
+      });
+    });
+});
+
+
+
 
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});

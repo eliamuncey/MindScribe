@@ -2,42 +2,73 @@
 <%- include('../partials/menu') %>
 
 <main>
-      <br>
-      <div class="container">
-      <% if (entry) { %>
-        <% entry.forEach(function (item) { %>
-          <%# Journal Selection Dropdown and Title Entry%>
-          <div class="input-group mb-3"> 
-          <% if (item.journal_title == null) { %>
-              <select id="journal-select-nojournal">
-                  <option class="dropdown-item" href="#">No Journal</option>
-              </select>
-          <% } else { %>
-              <select id="journal-select">
-                  <option class="dropdown-item" href="#"><%= item.journal_title %></option>
-              </select>
-          <% } %>
+  <br>
+  <div class="container">
+    <% if (entry) { %>
+      <% var entryId = entry.entry_id %> 
+      <% entry.forEach(function (item) { %>
+        <!-- Displays a journal selector drop-down based on the journal that has been selected
+        or "No Journal" if no journal has been selected-->
+        <div class="input-group mb-3"> 
+        <% if (item.journal_title == null) { %>
+            <select id="journal-select-nojournal">
+                <option class="dropdown-item" href="#">No Journal</option>
+            </select>
+        <% } else { %>
+            <select id="journal-select">
+                <option class="dropdown-item" href="#"><%= item.journal_title %></option>
+            </select>
+        <% } %>
+            <!--Displays Title Bar -->
+          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+        </div>
+        <br>
+        <!-- Displays note contents -->
+        <div class="input-group">
+          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
+        </div>
+        <!-- Button that formats text and sends the entry_id -->
+        <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format Note</button>
+        <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
+        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
+        <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
+        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete<a> 
+      <% }) %>
+    <% } %>
+  </div>
+</main>
 
-            <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
-          </div>
-          <br>
-          <%# Note Entry %>
-          <div class="input-group">
-            <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
-          </div>
+<%- include('../partials/message') %>
+<%- include('../partials/footer') %>
 
-            <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-          <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-          <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-          <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete<a> 
-
-          </div>
-        <% }) %>
-      <% } %>
-    </div>
-    </div>
-  </main>
+<script>
+  // Extracts content and entry_id, creates a data object, and then calls the /format endpoint
+  function formatNote(entryId) {
+    var content = document.querySelector('#filled-note-text').value.trim(); //extracts content
+    // create a JSON object with the raw_text and entry_id values
+    var data = {
+      raw_text: content,
+      entry_id: entryId
+    };
   
-
-  <%- include('../partials/message') %>
-  <%- include('../partials/footer') %>
+    // make a POST request to /format and pass in the data as JSON
+    fetch('/format', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(data => {
+      // display a success message to the user
+      alert('Note formatted successfully');
+      window.location.href = '/opennote?entry-id=' + entryId; //redirect to the updated note
+    })
+    .catch(error => {
+      console.error(error);
+      // display an error message to the user
+      alert('An error occurred while formatting the note');
+    });
+  }
+  </script>
+  
