@@ -7,15 +7,12 @@
       <br>
       <%# Journal Selection Dropdown and Title Entry%>
       <div class="input-group mb-3"> 
-        <form>
-          <h6>Select Journal</h6>
           <select id="journal-select">
             <option class="dropdown-item" href="#" journal-id="None" journal-title="None">Select Journal</option>
             <% for (var i = 0; i < journals.length; i++) { %>
               <option class="dropdown-item" href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
             <% } %>
           </select>
-        </form>
         <input id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" placeholder="Enter Title" maxlength="100">
         <p><span class="char-count">0/100</span></p>
       </div>

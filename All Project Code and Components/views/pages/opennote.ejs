@@ -2,24 +2,20 @@
 <%- include('../partials/menu') %>
 
 <main>
-    <div class="container">
       <br>
+      <div class="container">
       <% if (entry) { %>
         <% entry.forEach(function (item) { %>
           <%# Journal Selection Dropdown and Title Entry%>
           <div class="input-group mb-3"> 
           <% if (item.journal_title == null) { %>
-            <form>
               <select id="journal-select-nojournal">
                   <option class="dropdown-item" href="#">No Journal</option>
               </select>
-            </form>
           <% } else { %>
-            <form>
               <select id="journal-select">
                   <option class="dropdown-item" href="#"><%= item.journal_title %></option>
               </select>
-            </form>
           <% } %>
 
             <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
@@ -27,17 +23,18 @@
           <br>
           <%# Note Entry %>
           <div class="input-group">
-            <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" placeholder=" " readonly><%= item.raw_text %></textarea>
+            <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
           </div>
-  
-          <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-          <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete</a> 
-          <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
+
+            <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
           <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-          </script>
+          <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
+          <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete<a> 
+
           </div>
         <% }) %>
       <% } %>
+    </div>
     </div>
   </main>
   

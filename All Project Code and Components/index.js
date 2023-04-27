@@ -276,10 +276,16 @@ app.get('/journal', (req, res) => {
 // Get the entry from the database then enter the edit page with the contents of the entry
 app.get('/edit', (req, res) => {
   var id = req.query.id;  // get the ID from the ID query parmater in the URL
-  const query = "SELECT * FROM entries where entry_id = $1;"; // SQL query to retrieve all entries
-  db.any(query, [id]) 
+  const entryQuery = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1';
+  const journalQuery = 'SELECT * FROM journals;';
+  db.task(function (t) {
+    return t.batch([
+      t.any(entryQuery, [id]), // execute the entryQuery and pass the entry_id parameter
+      t.any(journalQuery), // execute the journalQuery
+    ]);
+  })
     .then(function (data) {
-      res.render('pages/edit', {results: data}); // Pass the 'data' to the 'results' variable in the home page
+      res.render('pages/edit', {results: data[0], journals: data[1]}); // Pass the 'data' to the 'results' variable and 'journals' to the 'journals' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -289,6 +295,7 @@ app.get('/edit', (req, res) => {
       });
     });
 });
+
 
 // Get the journal entry from the database then enter the edit journal page with the contents of the journal
 app.get('/editjournal', (req, res) => {
@@ -310,13 +317,21 @@ app.get('/editjournal', (req, res) => {
 
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
-  const query =
-    'UPDATE entries SET entry_title = $1, raw_text = $2 where entry_id = $3;';
-  db.any(query, [
-  	req.body.title,
-    req.body.text,
-    req.body.id
+  const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1;';
+  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null where entry_id = $3;';
+  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3 where entry_id = $4;';
+  if(req.body.journal_title != "No Journal") {
+  db.one(journalQuery, [
+    req.body.journal_title
   ])
+  .then(function (data){
+    db.any(updateQuery, [
+      req.body.title,
+      req.body.text,
+      data.journal_id,
+      req.body.id
+    ])
+  })
     .then(function (data) {
       res.redirect('/home');   // go to the home page
     })
@@ -326,7 +341,25 @@ app.post('/updatenote', function (req, res) {
         status: 'error',
         message: 'An error occurred while saving the note',
       });
-    });
+    })
+  }
+  else {
+      db.any(noJournalQuery, [
+        req.body.title,
+        req.body.text,
+        req.body.id
+      ])
+      .then(function (data) {
+        res.redirect('/home');   // go to the home page
+      })
+      .catch(function (err) {
+        console.error(err);
+        res.status(500).json({
+          status: 'error',
+          message: 'An error occurred while saving the note',
+        });
+      });
+  }
 });
 
 // Save an edited note - update the text in the database
