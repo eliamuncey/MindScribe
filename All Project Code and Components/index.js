@@ -8,10 +8,9 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
-//const openai = new OpenAIApi(new Configuration({
-// apiKey: process.env.API_Key
-//}))
+const axios = require('axios'); // To make HTTP requests from our server
+
+const {Configuration, OpenAIApi} = require("openai");
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -60,9 +59,28 @@ app.use(
   })
 );
 
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+//console.log(process.env.OPENAI_API_KEY);
+
+const openai = new OpenAIApi(configuration);
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+
+async function runCompletion() {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: "How are you today?",
+  });
+
+  console.log(completion.data.choices[0].text);
+}
+
+runCompletion();
 
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});
@@ -310,29 +328,6 @@ app.get('/deletenote', function (req, res) {
         message: 'An error occurred while deleting the note',
       });
     });
-});
-
-app.post('/format', (req,res) =>{
-  axios({
-    url: 'https://api.openai.com/v1/engines/davinci-codex/completions',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-    },
-    data: {
-      prompt: 'Hello, ChatGPT!',
-      max_tokens: 2048,
-      n: 1,
-      stop: '\n'
-    }
-  })
-  .then(results => {
-    console.log(results.data.choices[0].text);
-  })
-  .catch(error => {
-    console.log(error);
-  });
 });
 
 app.get('/mood', (req, res) => { 
