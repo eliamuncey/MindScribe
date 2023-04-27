@@ -85,7 +85,7 @@ const openai = new OpenAIApi(configuration);
 app.post('/format', async function (req, res) { //async function to await for ChatGPT reply
   const { raw_text, entry_id } = req.body; //seperates data
   
-  const prompt = `Format the following entry for increased readability using appropriate punctuation, capitalization, spacing, paragraph breaks, and correct typos, reply only with the formatted version of the text:\n\n${raw_text}`;
+  const prompt = `Format the following text using punctuation, capitalization, spacing, and paragraph breaks where appropriate. Correct grammar, typos, and misspellings. Do not remove or add any words. Reply only with the formatted version of the text:\n\n${raw_text}`;
   
   const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
     model: "text-davinci-003", //text model being used
