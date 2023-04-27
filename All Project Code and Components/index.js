@@ -312,6 +312,29 @@ app.get('/deletenote', function (req, res) {
     });
 });
 
+app.post('/format', (req,res) =>{
+  axios({
+    url: 'https://api.openai.com/v1/engines/davinci-codex/completions',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+    },
+    data: {
+      prompt: 'Hello, ChatGPT!',
+      max_tokens: 2048,
+      n: 1,
+      stop: '\n'
+    }
+  })
+  .then(results => {
+    console.log(results.data.choices[0].text);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+});
+
 app.get('/mood', (req, res) => { 
   res.render("pages/mood");
 });
