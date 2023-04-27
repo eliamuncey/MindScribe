@@ -37,7 +37,6 @@
           var content = document.querySelector('#note-text').value.trim(); //gets text
           var select = document.getElementById("journal-select");
           var value = select.options[select.selectedIndex].getAttribute("journal-id");
-          console.log(value);
           if (value == "None") //if no journal is selected
           {
             fetch('/savenote', { //calls /savenote and passes note info

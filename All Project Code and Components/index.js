@@ -273,47 +273,6 @@ app.get('/journal', (req, res) => {
     });
 });
 
-// Get the entry from the database then enter the edit page with the contents of the entry
-app.get('/edit', (req, res) => {
-  var id = req.query.id;  // get the ID from the ID query parmater in the URL
-  const entryQuery = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1';
-  const journalQuery = 'SELECT * FROM journals;';
-  db.task(function (t) {
-    return t.batch([
-      t.any(entryQuery, [id]), // execute the entryQuery and pass the entry_id parameter
-      t.any(journalQuery), // execute the journalQuery
-    ]);
-  })
-    .then(function (data) {
-      res.render('pages/edit', {results: data[0], journals: data[1]}); // Pass the 'data' to the 'results' variable and 'journals' to the 'journals' variable
-    })
-    .catch(function (err) {
-      console.error(err);
-      res.status(500).json({
-        status: 'error',
-        message: 'An error occurred while fetching notes',
-      });
-    });
-});
-
-
-// Get the journal entry from the database then enter the edit journal page with the contents of the journal
-app.get('/editjournal', (req, res) => {
-  var id = req.query.id;  // get the ID from the ID query parmater in the URL
-  const query = "SELECT * FROM journals where journal_id = $1;"; // SQL query to retrieve all entries
-  db.any(query, [id]) 
-    .then(function (data) {
-      res.render('pages/editjournal', {results: data}); // Pass the 'data' to the 'results' variable in the home page
-    })
-    .catch(function (err) {
-      console.error(err);
-      res.status(500).json({
-        status: 'error',
-        message: 'An error occurred while fetching notes',
-      });
-    });
-});
-
 
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
