@@ -367,14 +367,15 @@ app.get('/deletenote', function (req, res) {
     });
 });
 
-// Save an edited note - update the text in the database
-app.get('/deletejournal', function (req, res) {
+app.get('/deletejournal', function (req, res) { //delete journal
   var id = req.query.id;
-  const query = 'DELETE FROM journals WHERE journal_id = $1;';
-  db.any(query, [id])
-    .then(function (data) {
-      res.redirect('/journal');   // go to the journal page
-    })
+  const updateQuery ='UPDATE entries SET journal_id = null WHERE journal_id = $1;';
+  const deleteQuery ='DELETE FROM journals WHERE journal_id = $1;';
+  db.task(async (t) => {
+    await t.none(updateQuery, [id]); // Update all entries with journal_id = null
+    await t.none(deleteQuery, [id]); // Delete journal
+    res.redirect('/journal'); // Redirect to journal page
+  })
     .catch(function (err) {
       console.error(err);
       res.status(500).json({
