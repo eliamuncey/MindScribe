@@ -9,6 +9,11 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+
+// allow static usage of files (example /images/somefile.jpg)
+// this makes everything in the "static_files" directory accessable
+app.use(express.static('static_files'));
+
 //const openai = new OpenAIApi(new Configuration({
 // apiKey: process.env.API_Key
 //}))
@@ -134,8 +139,7 @@ app.get("/createnewnote", (req, res) => {
 
 app.post('/savenote', function (req, res) {
   const query =
-  'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
-  // INSERT INTO entries (entry_title, raw_text, journal_id) VALUES ($1, $2, $3) RETURNING *;';
+  'INSERT INTO entries (entry_title, raw_text, username, entry_mood, journal_id, entry_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;';
 
   const date = new Date().toISOString();  // get the current date as an ISO string
 
@@ -143,8 +147,9 @@ app.post('/savenote', function (req, res) {
     req.body.entry_title,
     req.body.raw_text,
     req.session.user.username,
+    req.body.mood,
+    req.body.journal_id,
     date
-    // req.body.journal_id
   ])
     .then(function (data) {
       res.status(200).json({
@@ -339,7 +344,7 @@ app.post('/updatejournal', function (req, res) {
     });
 });
 
-// Save an edited note - update the text in the database
+// Delete a note
 app.get('/deletenote', function (req, res) {
   var id = req.query.id;
   const query = 'DELETE FROM entries WHERE entry_id = $1;';
@@ -356,7 +361,7 @@ app.get('/deletenote', function (req, res) {
     });
 });
 
-// Save an edited note - update the text in the database
+// Delete a journal
 app.get('/deletejournal', function (req, res) {
   var id = req.query.id;
   const query = 'DELETE FROM journals WHERE journal_id = $1;';

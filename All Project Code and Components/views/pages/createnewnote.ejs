@@ -23,21 +23,37 @@
         <textarea id="note-text" class="form-control char-limited" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note" maxlength="2000"></textarea>
         <p><span class="char-count">0/2000</span></p>
       </div>
+      <br/>
 
-
-      <%# Save Button %>
-      <div class="mt-3 text-center">
-        <button id="save-note" class="btn btn-primary">Save Note</button>
+      <!-- see https://www.w3schools.com/charsets/ref_emoji_smileys.asp for list of emoji codes -->
+      <div class="input-group">
+        <span class="input-group-text">Mood</span>
+        <select class="form-select" name="note-mood" id="note-mood">        
+          <option value="1">&#128544; angry</option>
+          <option value="2">&#128550; unhappy</option>
+          <option selected value="3">&#128528; neutral</option>
+          <option value="4">&#128578; happy</option>
+          <option value="5">&#128513; very happy</option>        
+        </select>
       </div>
-      <%# Format Button %>
-      <div class="mt-3 text-center">
+    </br>
+        
+      <%# Cancel Button %>
+      <!-- div class="mt-3 text-center" -->
+      <div >  
+        <a href="/home"><button id="cancel-note" class="btn btn-primary">Cancel</button></a>      
+        <%# Format Button %> 
         <button class="btn btn-primary" id="Format-note" onclick="submitParagraph()">Format Note</button>
-      <script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
+        <%# Save Button %>
+        <button id="save-note" class="btn btn-primary">Save Note</button>
+     
+        <script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
       <script>
         var saveNoteButton = document.querySelector('#save-note'); 
         saveNoteButton.addEventListener('click', function() { //on click of Save Note
-          var title = document.querySelector('#note-title').value.trim(); //gets title
+            var title = document.querySelector('#note-title').value.trim(); //gets title
             var content = document.querySelector('#note-text').value.trim(); //gets text
+            var noteMood = document.querySelector('#note-mood').value.trim(); //gets text
             fetch('/savenote', { //calls /savenote and passes note info
             method: 'POST',
             headers: {
@@ -46,7 +62,8 @@
             body: JSON.stringify({ //converts data to json strings
               entry_title: title,
               raw_text: content,
-              journal_id: 1,
+              journal_id: 1,    // TODO: use value from journal drop down list
+              mood: noteMood
             })
           })
           .then(function(response) {

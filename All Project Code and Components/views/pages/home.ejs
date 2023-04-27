@@ -9,10 +9,13 @@
 	    <div class="row row-cols-3 row-cols-md-3 g-4">
         <% entries.forEach(function(entry) { %>
 		      <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card h-100" >
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
-				        <p class="card-text"><%= entry.raw_text %></p>
+				        <!-- show only first part of note text, use "Open Note" to see whole note -->
+                <p class="card-text" style="width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  <%= entry.raw_text %>
+                </p>
                 <form action="/opennote">
                   <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
                   <button type="submit" class="btn btn-primary">Open Note</button>
