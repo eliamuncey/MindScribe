@@ -134,17 +134,34 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  const hash = await bcrypt.hash(req.body.password, 10);
-  const values = [req.body.username, hash];
-  query = "INSERT INTO users (username, password) VALUES ($1, $2);";
-  db.any(query, values)
-    .then(function (data) {
-      res.redirect("/login");
-    })
-    .catch((err) => {
-      console.log(err);
-      res.render("pages/register", { message: "Username taken, try again with a different username" });
-    });
+
+  const username = req.body.username;
+  const password = req.body.password;
+  const confirm_password = req.body.confirm_password;
+
+  const check_user = 'SELECT * FROM users WHERE username = $1';
+  const result = await db.any(check_user, [username]);
+
+  const insert = "INSERT INTO users (username, password) VALUES ($1, $2)";
+
+  if (result.length == 0) {
+    if (password == confirm_password) {
+      // res.render("pages/register", {message: 'all good'});
+      const hash = await bcrypt.hash(password, 10);
+      db.any(insert, [username, hash])
+      .then(function (data) {
+        res.render("pages/login", {message: 'Welcome to MindScribe!'});
+      })
+      .catch((err) => {
+        res.render("pages/register", {message: 'Could not create account'});
+      })
+    } else {
+      res.render("pages/register", {message: 'Passwords do not match'});
+    }
+  } else {
+    res.render("pages/register", {message: 'Username taken'});
+  }
+
 });
 
 app.post('/login', async (req, res) => {
