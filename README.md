@@ -9,7 +9,7 @@ Elia Muncey<br>
 Jared Roberts<br>
 </p>
 <h2>Technology Stack</h2>
-<img src="All Project Code and Components/images/tech stack.png" height="500">
+<img src=All Project Code and Components/resources/images/tech_stack.png" height="500">
 <h2>Application Prerequisites</h2>
 <p>To run the application, you must install Docker. Our application uses Docker containers to function.</p>
 <h2>Use Instructions</h2>
