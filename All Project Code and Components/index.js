@@ -154,7 +154,7 @@ app.post('/register', async (req, res) => {
       })
       .catch((err) => {
         res.render("pages/register", {message: 'Could not create account'});
-      })
+      });
     } else {
       res.render("pages/register", {message: 'Passwords do not match'});
     }
