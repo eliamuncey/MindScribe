@@ -13,6 +13,8 @@
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
 				        <p class="card-text"><%= entry.raw_text %></p>
+                <p class="card-text"><%= entry.date %></p>
+                <p class="card-text"><%= entry.time %></p>
                 <form action="/opennote">
                   <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
                   <button type="submit" class="btn btn-primary">Open Note</button>

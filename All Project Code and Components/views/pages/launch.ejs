@@ -1,0 +1,33 @@
+<%- include ('../partials/head') %>
+<link rel="stylesheet" href="../../resources/css/launch.css">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/launch">Logo
+              <!-- <img src="../../resources/images/Mindscribe_Logo.png" alt="logo" width="30" height="24" class="d-inline-block align-text-top"> -->
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>                  
+                  <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+  </header>
+<main>
+    <div class="container">
+        <h1>MindScribe</h1>
+        <h4>Harnessing artificial intelligence to promote mindfulness and wellbeing</h4>
+        <form action="/register">
+            <button type="submit">Get Started</button>
+        </form>
+    </div>
+</main>
+
+<%- include ('../partials/message') %>
+<%- include ('../partials/footer') %>

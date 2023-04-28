@@ -82,6 +82,30 @@ const openai = new OpenAIApi(configuration);
 
 // runCompletion();
 
+// adding test user
+(async () => {
+  try {
+    const hashedPassword = await bcrypt.hash('password', 10);
+    await db.none('INSERT INTO users (username, password) VALUES ($1, $2)', ['username', hashedPassword]);
+  } catch (err) {
+    console.error(err);
+  }
+})();
+
+// async function insertData() {
+//   try {
+//     const {id} = await db.one('SELECT user_id FROM users WHERE username = $1', ['username']);
+//     await db.none("INSERT INTO journals (journal_title, journal_description, user_id) VALUES ($1, $2, $3)", ['Journal 1', 'This is my first journal', id]);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
+// insertData().then(() => {
+//   console.log('Data inserted successfully');
+// }).catch((err) => {
+//   console.error(err);
+// });
+
 app.post('/format', async function (req, res) { //async function to await for ChatGPT reply
   const { raw_text, entry_id } = req.body; //seperates data
   
@@ -114,15 +138,16 @@ app.post('/format', async function (req, res) { //async function to await for Ch
     });
 });
 
-
-
-
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});
 });
 
 app.get('/', (req, res) => { //default route
-  res.redirect('/login'); //this will call the /login route in the API
+  res.redirect('/launch'); //this will call the /login route in the API
+});
+
+app.get('/launch', (req, res) => {
+  res.render("pages/launch");
 });
 
 app.get('/login', (req, res) => {
@@ -217,17 +242,12 @@ app.get('/createnewnote', function (req, res) {
 });
 
 app.post('/savenote', function (req, res) {
-  const query =
-  // 'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
-  'INSERT INTO entries (entry_title, raw_text, user_id, entry_date, journal_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-
-  const date = new Date().toISOString();  // get the current date as an ISO string
+  const query = 'INSERT INTO entries (entry_title, raw_text, user_id, journal_id, date, time) VALUES ($1, $2, $3, $4, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING *;';
 
   db.any(query, [
     req.body.entry_title,
     req.body.raw_text,
     req.session.user.user_id,
-    date,
     req.body.journal_id
   ])
     .then(function (data) {
@@ -319,9 +339,10 @@ app.post('/savejournal', function (req, res) {
 
 app.get('/home', (req, res) => {
   const query = 'SELECT * FROM entries WHERE entries.user_id = $1;'; // SQL query to retrieve all entries with current session username
+  const userId = req.session.user.user_id;
   db.any(query, [req.session.user.user_id])
     .then(function (data) {
-      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'entries' variable
+      res.render('pages/home', {entries: data, id: userId}); // Pass the 'data' to the 'entries' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -392,8 +413,8 @@ app.get('/editjournal', (req, res) => {
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
   const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1;';
-  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null where entry_id = $3;';
-  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3 where entry_id = $4;';
+  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $3;';
+  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $4;';
   if(req.body.journal_title != "No Journal") {
   db.one(journalQuery, [
     req.body.journal_title
@@ -496,8 +517,28 @@ app.get('/mood', (req, res) => {
   res.render("pages/mood");
 });
 
-app.get('/profile', (req, res) => { 
-  res.render("pages/profile");
+app.get('/profile', async (req, res) => {
+  const userId = req.session.user.user_id;
+  try {
+    const journalCountQuery = await db.any('SELECT * FROM journals WHERE user_id = $1',[userId]);
+    const numJournals = journalCountQuery.length;
+    const entryCountQuery = await db.any('SELECT * FROM entries WHERE user_id = $1',[userId]);
+    const numEntries = entryCountQuery.length;
+    const wordCountQuery = await db.any('SELECT SUM(ARRAY_LENGTH(REGEXP_SPLIT_TO_ARRAY(raw_text, \'\\s+\'), 1)) AS words FROM entries WHERE user_id = $1',[userId]);
+    let numWords = wordCountQuery[0].words;
+    if (numWords == null) {
+      numWords = 0;
+    }
+    const charCountQuery = await db.any('SELECT SUM(LENGTH(raw_text)) AS chars FROM entries WHERE user_id = $1',[userId]);
+    let numChars = charCountQuery[0].chars;
+    if (numChars == null) {
+      numChars = 0;
+    }
+    res.render("pages/profile", { name: req.session.user.username, journal_count: numJournals, entry_count: numEntries, word_count: numWords, char_count: numChars });
+  } catch (error) {
+    console.error('Error getting journal count', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.post('/changeusername', async (req,res) => {
