@@ -22,8 +22,8 @@ user_id INT REFERENCES users(user_id)
 DROP TABLE IF EXISTS entries CASCADE;
 CREATE TABLE entries(
 entry_id SERIAL PRIMARY KEY,
-user_id INT REFERENCES users(user_id),
 -- username VARCHAR(50) REFERENCES users (username),
+user_id INT REFERENCES users(user_id),
 entry_title TEXT,
 entry_date DATE,
 raw_text TEXT,
