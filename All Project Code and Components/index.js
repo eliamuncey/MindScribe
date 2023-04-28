@@ -482,6 +482,20 @@ app.get('/profile', (req, res) => {
   res.render("pages/profile");
 });
 
+// app.post('/changeusername', async (req,res) => {
+//   const id = req.body.user_id;
+//   const new_username = req.body.new_username;
+//   const query = 'UPDATE users SET users.username= $1 WHERE users.user_id = $2;';
+//   db.any(query, [new_username, id])
+//     .then(function (data) {
+//       res.render("pages/profile", {message: "Username updated successfully"});
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.render("pages/register", { message: "Issue updating username"});
+//     });
+// });
+
 app.get('/calendar', (req, res) => {
   res.render("pages/calendar");
 });
