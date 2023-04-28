@@ -316,7 +316,7 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  const query = 'SELECT * FROM journals WHERE journals.user_id = $1'; // SQL query to retrieve all journals with current session username
+  const query = `SELECT * FROM journals WHERE journals.user_id = $1;`; // SQL query to retrieve all journals with current session username
   db.any(query, [req.session.user.user_id])
     .then(function (data) {
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
@@ -483,19 +483,18 @@ app.get('/profile', (req, res) => {
   res.render("pages/profile");
 });
 
-// app.post('/changeusername', async (req,res) => {
-//   const id = req.body.user_id;
-//   const new_username = req.body.new_username;
-//   const query = 'UPDATE users SET users.username= $1 WHERE users.user_id = $2;';
-//   db.any(query, [new_username, id])
-//     .then(function (data) {
-//       res.render("pages/profile", {message: "Username updated successfully"});
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.render("pages/register", { message: "Issue updating username"});
-//     });
-// });
+app.post('/changeusername', async (req,res) => {
+  const id = req.session.user.user_id;
+  const new_username = req.body.new_username;
+  const query = 'UPDATE users SET username = $1 WHERE user_id = $2 RETURNING *';
+  try {
+    const result = await db.query(query, [new_username, id]);
+    res.redirect('/profile');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/profile', { message: 'Error updating username.' });
+  }
+});
 
 app.get('/calendar', (req, res) => {
   res.render("pages/calendar");
