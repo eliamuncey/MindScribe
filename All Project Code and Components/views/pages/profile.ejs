@@ -6,6 +6,34 @@
         <br>
         <h1>Profile</h1>
         <hr>
+        <h3><%= name %>, you have scribed...</h3><br>
+        <p>
+        <%= journal_count %>
+        <% if (journal_count == 1) { %>
+            journal,<br>
+        <% } else { %>
+            journals,<br>
+        <% } %>
+        <%= entry_count %>
+        <% if (entry_count == 1) { %>
+            note,<br>
+        <% } else { %>
+            notes,<br>
+        <% } %>
+        <%= word_count %>
+        <% if (word_count == 1) { %>
+            word,<br>
+        <% } else { %>
+            words,<br>
+        <% } %>
+        and <%= char_count %>
+        <% if (char_count == 1) { %>
+            character,<br>
+        <% } else { %>
+            characters<br>
+        <% } %>
+        </p>
+        <hr>
         <h3>Username</h3>
         <br>
         <form action="/changeusername" method="POST">
