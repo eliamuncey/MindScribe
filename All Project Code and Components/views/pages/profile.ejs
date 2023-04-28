@@ -5,6 +5,31 @@
     <div class="container">
         <br>
         <h1>Profile</h1>
+        <hr>
+        <h3>Username</h3>
+        <br>
+        <form action="/changeusername" method="POST">
+            <div class="form-group">
+                <label for="new_username">New Username:</label>
+                <input type="text" class="form-control" name="new_username">
+                <br>
+                <button type="submit" class="btn btn-primary">Change Username</button>
+            </div>
+        </form>
+        <hr>
+        <h3>Password</h3>
+        <br>
+        <form action="/changepassword" method="POST">
+            <div class="form-group">
+                <label for="new_password">New Password:</label>
+                <input type="password" class="form-control" name="new_password">
+                <label for="confirm_password">Confirm New Password:</label>
+                <input type="password" class="form-control" name="confirm_new_password">
+                <br>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+            </div>
+        </form>
+        <hr>
         <br>
     </div>
 </main>
