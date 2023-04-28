@@ -171,11 +171,12 @@ app.post('/register', async (req, res) => {
 
   if (result.length == 0) {
     if (password == confirm_password) {
-      // res.render("pages/register", {message: 'all good'});
       const hash = await bcrypt.hash(password, 10);
       db.any(insert, [username, hash])
       .then(function (data) {
-        res.render("pages/login", {message: 'Welcome to MindScribe!'});
+        req.session.user = data;
+        req.session.save();
+        res.redirect('/home');
       })
       .catch((err) => {
         res.render("pages/register", {message: 'Could not create account'});
