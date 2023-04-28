@@ -202,14 +202,14 @@ app.get('/createnewnote', function (req, res) {
 app.post('/savenote', function (req, res) {
   const query =
   // 'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
-  'INSERT INTO entries (entry_title, raw_text, username, entry_date, journal_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
+  'INSERT INTO entries (entry_title, raw_text, user_id, entry_date, journal_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
 
   const date = new Date().toISOString();  // get the current date as an ISO string
 
   db.any(query, [
     req.body.entry_title,
     req.body.raw_text,
-    req.session.user.username,
+    req.session.user.user_id,
     date,
     req.body.journal_id
   ])
@@ -278,11 +278,11 @@ app.get("/createnewjournal", (req, res) => {
 
 app.post('/savejournal', function (req, res) {
   const query =
-    'INSERT INTO journals (journal_title, journal_description, username) VALUES ($1, $2, $3) RETURNING *;';
+    'INSERT INTO journals (journal_title, journal_description, user_id) VALUES ($1, $2, $3) RETURNING *;';
   db.any(query, [
     req.body.journal_title,
     req.body.journal_description,
-    req.session.user.username
+    req.session.user.user_id
   ])
     .then(function (data) {
       res.status(200).json({
@@ -301,8 +301,8 @@ app.post('/savejournal', function (req, res) {
 });
 
 app.get('/home', (req, res) => {
-  const query = 'SELECT * FROM entries WHERE entries.username = $1;'; // SQL query to retrieve all entries with current session username
-  db.any(query, [req.session.user.username])
+  const query = 'SELECT * FROM entries WHERE entries.user_id = $1;'; // SQL query to retrieve all entries with current session username
+  db.any(query, [req.session.user.user_id])
     .then(function (data) {
       res.render('pages/home', {entries: data}); // Pass the 'data' to the 'entries' variable
     })
@@ -316,8 +316,8 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  const query = 'SELECT * FROM journals WHERE journals.username = $1'; // SQL query to retrieve all journals with current session username
-  db.any(query, [req.session.user.username])
+  const query = 'SELECT * FROM journals WHERE journals.user_id = $1'; // SQL query to retrieve all journals with current session username
+  db.any(query, [req.session.user.user_id])
     .then(function (data) {
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
