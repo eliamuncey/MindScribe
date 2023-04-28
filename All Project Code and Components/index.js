@@ -278,10 +278,11 @@ app.get("/createnewjournal", (req, res) => {
 
 app.post('/savejournal', function (req, res) {
   const query =
-    'INSERT INTO journals (journal_title, journal_description) VALUES ($1, $2) RETURNING *;';
+    'INSERT INTO journals (journal_title, journal_description, username) VALUES ($1, $2, $3) RETURNING *;';
   db.any(query, [
     req.body.journal_title,
-    req.body.journal_description
+    req.body.journal_description,
+    req.session.user.username
   ])
     .then(function (data) {
       res.status(200).json({
@@ -300,10 +301,10 @@ app.post('/savejournal', function (req, res) {
 });
 
 app.get('/home', (req, res) => {
-  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
-  db.any(query)
+  const query = 'SELECT * FROM entries WHERE entries.username = $1;'; // SQL query to retrieve all entries with current session username
+  db.any(query, [req.session.user.username])
     .then(function (data) {
-      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
+      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'entries' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -315,8 +316,8 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
-  db.any(query)
+  const query = 'SELECT * FROM journals WHERE journals.username = $1'; // SQL query to retrieve all journals with current session username
+  db.any(query, [req.session.user.username])
     .then(function (data) {
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
@@ -324,7 +325,7 @@ app.get('/journal', (req, res) => {
       console.error(err);
       res.status(500).json({
         status: 'error',
-        message: 'An error occurred while fetching notes',
+        message: 'An error occurred while fetching journals',
       });
     });
 });
