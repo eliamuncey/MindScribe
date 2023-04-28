@@ -486,13 +486,32 @@ app.get('/profile', (req, res) => {
 app.post('/changeusername', async (req,res) => {
   const id = req.session.user.user_id;
   const new_username = req.body.new_username;
-  const query = 'UPDATE users SET username = $1 WHERE user_id = $2 RETURNING *';
+  const query = 'UPDATE users SET username = $1 WHERE user_id = $2';
   try {
     const result = await db.query(query, [new_username, id]);
-    res.redirect('/profile');
+    res.render("pages/profile", {message: 'Username updated successfully.'});
   } catch (err) {
     console.error(err);
-    res.redirect('/profile', { message: 'Error updating username.' });
+    res.render("pages/profile", {message: 'Error updating username.'});
+  }
+});
+
+app.post('/changepassword', async (req,res) => {
+  const id = req.session.user.user_id;
+  const new_password = req.body.new_password;
+  const confirm_new_password = req.body.confirm_new_password;
+  const query = 'UPDATE users SET password = $1 WHERE user_id = $2';
+  if (new_password == confirm_new_password) {
+    const hash = await bcrypt.hash(new_password, 10);
+    try {
+      const result = await db.query(query, [hash, id]);
+      res.render("pages/profile", {message: 'Password updated successfully.'});
+    } catch (err) {
+      console.error(err);
+      res.render("pages/profile", {message: 'Error updating password.'});
+    }
+  } else {
+    res.render("pages/profile", {message: 'Passwords do not match.'});
   }
 });
 
