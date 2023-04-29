@@ -67,6 +67,10 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+app.use('/images', express.static('resources/images'));
+app.use('/styles', express.static('resources/css'));
+//app.use('/modal', express.static('));
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -185,7 +189,7 @@ app.post('/register', async (req, res) => {
       res.render("pages/register", {message: 'Passwords do not match'});
     }
   } else {
-    res.render("pages/register", {message: 'Username taken'});
+    res.render("pages/register", {message: 'Username already in use'});
   }
 
 });
@@ -203,12 +207,12 @@ app.post('/login', async (req, res) => {
         res.redirect('/home');
       }
       else {
-        res.render("pages/login", { message: "Username or password incorrect, please try again" });
+        res.render("pages/login", { message: "Incorrect username or password" });
       }
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/login", { message: "Username or password incorrect, please try again" });
+      res.render("pages/login", { message: "Incorrect username or password" });
     });
 });
 

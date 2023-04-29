@@ -1,8 +1,7 @@
+<link rel="stylesheet" href="/styles/message.css">
 <% if (locals.message) { %>
-    <div
-      class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
-      role="alert">
+    <div class="message">
       <%= message %>
     </div>
-    <% } %>
+<% } %>
     
