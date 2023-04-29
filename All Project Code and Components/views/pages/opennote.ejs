@@ -28,11 +28,11 @@
           <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
         </div>
         <!-- Button that formats text and sends the entry_id -->
-        <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format Note</button>
+        <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format</button>
         <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
         <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
         <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger btn-sm">Delete<a> 
+        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger">Delete<a> 
       <% }) %>
     <% } %>
   </div>
@@ -70,5 +70,5 @@
       alert('An error occurred while formatting the note');
     });
   }
-  </script>
+</script>
   
