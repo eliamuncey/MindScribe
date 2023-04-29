@@ -20,22 +20,19 @@
             </select>
         <% } %>
             <!--Displays Title Bar -->
-          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>">
+          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
         </div>
         <br>
         <!-- Displays note contents -->
         <div class="input-group">
-          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;"><%= item.raw_text %></textarea>
+          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
         </div>
         <!-- Button that formats text and sends the entry_id -->
         <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format</button>
         <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-        <!-- <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a> -->
+        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
         <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-        <!-- <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger">Delete<a>  -->
-        <button id="edit" class="btn btn-primary" onclick="editNote('<%= item.entry_id %>')">Edit</button>
-        <button id="delete" class="btn btn-danger" onclick="deleteNote('<%= item.entry_id %>')">Delete</button>
-
+        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger">Delete<a> 
       <% }) %>
     <% } %>
   </div>
@@ -73,40 +70,5 @@
       alert('An error occurred while formatting the note');
     });
   }
-
-  function formatNote(entryId) {
-    var new_title = document.querySelector('#filled-note-title').value.trim();
-    var new_text = document.querySelector('#filled-note-text').value.trim();
-    var data = {
-      title: new_title,
-      text: new_text,
-      id: entryId
-    };
-  
-    // make a POST request to /format and pass in the data as JSON
-    fetch('/updatenote', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(data => {
-      // display a success message to the user
-      alert('Note edited successfully');
-      window.location.href = '/opennote?entry-id=' + entryId; //redirect to the updated note
-    })
-    .catch(error => {
-      console.error(error);
-      // display an error message to the user
-      alert('An error occurred while formatting the note');
-    });
-  }
-
-  
-
-  // function deleteNote(entryId) {
-
-  // }
 </script>
   
