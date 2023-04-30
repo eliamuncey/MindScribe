@@ -1,27 +1,53 @@
 <%- include ('../partials/head') %>
-<%- include ('../partials/menu') %>
-
+<%- include ('../partials/menu', {active: 'home'}) %>
+<link rel="stylesheet" href="styles/home.css">
 <main>
-  <div class="container">
-    <br>
-    <h1>All Notes</h1>
-    <br>
-	    <div class="row row-cols-3 row-cols-md-3 g-4">
-        <% entries.forEach(function(entry) { %>
-		      <div class="col">
-            <div class="card" style="width: 18rem;">
-			        <div class="card-body">
-				        <h5 class="card-title"><%= entry.entry_title %></h5>
-				        <p class="card-text"><%= entry.raw_text %></p>
-                <form action="/opennote">
-                  <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
-                  <button type="submit" class="btn btn-primary">Open Note</button>
-                </form>
-			      </div>
-		      </div>
-		    </div>
-        <% }) %>       
-  </div>
+    <div class="container-fluid">
+        <div class="greeting">
+            <% if (current_hour > 3 && current_hour <= 11) { %>
+                <h1 class="main-text heading">Good morning, <%= name %>!</h1>
+            <% } else if (current_hour >= 12 && current_hour <= 17) { %>
+                <h1 class="main-text heading">Good afternoon, <%= name %>!</h1>
+            <% } else { %>
+                <h1 class="main-text heading">Good evening, <%= name %>!</h1>
+            <% } %>
+        </div>
+        <hr>
+        <div class="left">
+            <h1 class="main-text">You have written:</h1><br>
+            <p  class="main-text">
+            <%= journal_count %>
+            <% if (journal_count == 1) { %>
+                journal<br>
+            <% } else { %>
+                journals<br>
+            <% } %>
+            <%= entry_count %>
+            <% if (entry_count == 1) { %>
+                note<br>
+            <% } else { %>
+                notes<br>
+            <% } %>
+            <%= word_count %>
+            <% if (word_count == 1) { %>
+                word<br>
+            <% } else { %>
+                words<br>
+            <% } %>
+            <%= char_count %>
+            <% if (char_count == 1) { %>
+                character<br>
+            <% } else { %>
+                characters<br>
+            <% } %>
+            </p>
+        </div>
+        <div class="right">
+            <h1>some</h1>
+            <h2>stuff</h2>
+            <h3>here</h3>
+        </div>
+    </div>
 </main>
 
 <%- include ('../partials/message') %>

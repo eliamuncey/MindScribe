@@ -1,13 +1,51 @@
 <%- include ('../partials/head') %>
-<%- include ('../partials/menu') %>
-
+<%- include ('../partials/menu', {active: 'profile'}) %>
+<%- include ('../partials/message') %>
+<link rel="stylesheet" href="/styles/profile.css">
 <main>
     <div class="container">
         <br>
-        <h1>Profile</h1>
+        <br>
+        <h1 class="main-text title">Username</h1>
+        <br>
+        <form action="/changeusername" method="POST">
+            <div class="form-group">
+                <label for="new_username" class="main-text subtitle">New Username</label>
+                <input type="text" name="new_username">
+                <br>
+                <button type="submit" class="button">Change Username</button>
+            </div>
+        </form>
+        <br>
+        <br>
+        <br>
+        <hr>
+        <h1 class="main-text title">Password</h1>
+        <br>
+        <form action="/changepassword" method="POST">
+            <div class="form-group">
+                <label for="new_password" class="main-text subtitle">New Password</label>
+                <input type="password" name="new_password">
+                <br>
+                <label for="confirm_password" class="main-text subtitle">Confirm New Password</label>
+                <input type="password" name="confirm_new_password">
+                <br>
+                <button type="submit" class="button">Change Password</button>
+            </div>
+        </form>
+        <br>
+        <br>
+        <br>
+        <hr>
+        <br>
+        <div class="center">
+            <form action="/logout" method="GET">
+                <button type="submit" class="logout">Log Out</button>
+            </form>
+        </div>
+        <br>
         <br>
     </div>
 </main>
 
-<%- include ('../partials/message') %>
 <%- include ('../partials/footer') %>

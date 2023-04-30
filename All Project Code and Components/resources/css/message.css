@@ -1,0 +1,17 @@
+* {
+    margin:0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.message {
+    background-color: rgb(155, 146, 146);
+    font-family: 'Urbanist', sans-serif;
+    height: 50px;
+    /* border: 5px double white; */
+    color: white;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}

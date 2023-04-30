@@ -1,24 +1,57 @@
 <%- include ('../partials/head') %>
-
+<link rel="stylesheet" href="/styles/login-register.css">
+<head>
+  <nav class="navbar navbar-expand-lg bg-light;" id="navbar">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="/launch">
+            <img src="/images/quill-white.svg" alt="logo" class="d-inline-block align-text-top logo">
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link all-buttons active-button" href="/register">Register</a>
+              </li>                  
+                <li class="nav-item">
+                      <a class="nav-link all-buttons" href="/login" style="margin-right:30px;">Login</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+</head>
+<%- include ('../partials/message') %>
 <main>
   <div class="container">
     <br>
-    <h1>Register</h1>
+    <h1 class="main-text" id="title">Register</h1>
     <br>
     <form action="/register" method="POST">
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" name="username">
+        <label for="username" class="main-text" id="subtitle">Username</label>
+        <input type="text" name="username">
       </div>
+      <br>
       <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" class="form-control" name="password">
+        <label for="password" class="main-text" id="subtitle">Password</label>
+        <input type="password" name="password">
       </div>
-      <hr>
-      <p>Already have an account? <a href="/login">Login</a><button type="submit" class="btn btn-primary" style="float:right">Register</button></p>
+      <br>
+      <div class="form-group">
+        <label for="confirm_password" class="main-text" id="subtitle">Confirm Password</label>
+        <input type="password" name="confirm_password">
+      </div>
+      <br>
+      <!-- <hr> -->
+      <!-- <p>Already have an account? <a href="/login">Login</a><button type="submit" class="btn btn-primary" style="float:right">Register</button></p> -->
+      <button type="submit" id="button">Register</button>
     </form>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
 </main>
-
-<%- include ('../partials/message') %>
 <%- include ('../partials/footer') %>

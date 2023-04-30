@@ -1,0 +1,46 @@
+<%- include ('../partials/head') %>
+<link rel="stylesheet" href="/styles/launch.css">
+<head>
+    <nav class="navbar navbar-expand-lg bg-light;" id="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/launch">
+              <img src="/images/quill-white.svg" alt="logo" class="d-inline-block align-text-top logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link all-buttons" href="/register">Register</a>
+                    </li>                  
+                    <li class="nav-item">
+                        <a class="nav-link all-buttons" href="/login" style="margin-right:30px;">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</head>
+<%- include ('../partials/message') %>
+<main>
+    <div class="container">
+        <br>
+        <br>
+        <br>
+        <br>
+        <h1 class="main-text" id="title">MindScribe</h1><br>
+        <h4 class="main-text" id="subtitle">Harnessing artificial intelligence to promote mindfulness and wellbeing.</h4>
+        <br>
+        <div class="center">
+            <form action="/register">
+                <button type="submit" id="button">Get Started</button>
+            </form>
+        </div>
+        <br>
+        <br>
+        <br>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>

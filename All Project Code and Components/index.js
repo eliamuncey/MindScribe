@@ -67,6 +67,10 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+app.use('/images', express.static('resources/images'));
+app.use('/styles', express.static('resources/css'));
+//app.use('/modal', express.static('));
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -81,6 +85,30 @@ const openai = new OpenAIApi(configuration);
 // }
 
 // runCompletion();
+
+// adding test user
+(async () => {
+  try {
+    const hashedPassword = await bcrypt.hash('password', 10);
+    await db.none('INSERT INTO users (username, password) VALUES ($1, $2)', ['username', hashedPassword]);
+  } catch (err) {
+    console.error(err);
+  }
+})();
+
+// async function insertData() {
+//   try {
+//     const {id} = await db.one('SELECT user_id FROM users WHERE username = $1', ['username']);
+//     await db.none("INSERT INTO journals (journal_title, journal_description, user_id) VALUES ($1, $2, $3)", ['Journal 1', 'This is my first journal', id]);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
+// insertData().then(() => {
+//   console.log('Data inserted successfully');
+// }).catch((err) => {
+//   console.error(err);
+// });
 
 app.post('/format', async function (req, res) { //async function to await for ChatGPT reply
   const { raw_text, entry_id } = req.body; //seperates data
@@ -114,15 +142,16 @@ app.post('/format', async function (req, res) { //async function to await for Ch
     });
 });
 
-
-
-
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});
 });
 
 app.get('/', (req, res) => { //default route
-  res.redirect('/login'); //this will call the /login route in the API
+  res.redirect('/launch'); //this will call the /login route in the API
+});
+
+app.get('/launch', (req, res) => {
+  res.render("pages/launch");
 });
 
 app.get('/login', (req, res) => {
@@ -133,18 +162,41 @@ app.get('/register', (req, res) => {
   res.render("pages/register");
 });
 
+// app.get('/home', (req, res) => {
+//   res.render("pages/home");
+// })
+
 app.post('/register', async (req, res) => {
-  const hash = await bcrypt.hash(req.body.password, 10);
-  const values = [req.body.username, hash];
-  query = "INSERT INTO users (username, password) VALUES ($1, $2);";
-  db.any(query, values)
-    .then(function (data) {
-      res.redirect("/login");
-    })
-    .catch((err) => {
-      console.log(err);
-      res.render("pages/register", { message: "Username taken, try again with a different username" });
-    });
+
+  const username = req.body.username;
+  const password = req.body.password;
+  const confirm_password = req.body.confirm_password;
+
+  const check_user = 'SELECT * FROM users WHERE username = $1';
+  const result = await db.any(check_user, [username]);
+
+  const insert = "INSERT INTO users (username, password) VALUES ($1, $2)";
+
+  if (result.length == 0) {
+    if (password == confirm_password) {
+      const hash = await bcrypt.hash(password, 10);
+      db.any(insert, [username, hash])
+      .then(function (data) {
+        // req.session.user = data;
+        // req.session.save();
+        // res.redirect('/home');
+        res.render("pages/login", {message: 'Welcome to MindScribe!'});
+      })
+      .catch((err) => {
+        res.render("pages/register", {message: 'Could not create account'});
+      });
+    } else {
+      res.render("pages/register", {message: 'Passwords do not match'});
+    }
+  } else {
+    res.render("pages/register", {message: 'Username already in use'});
+  }
+
 });
 
 app.post('/login', async (req, res) => {
@@ -160,12 +212,12 @@ app.post('/login', async (req, res) => {
         res.redirect('/home');
       }
       else {
-        res.render("pages/login", { message: "Username or password incorrect, please try again" });
+        res.render("pages/login", { message: "Incorrect username or password" });
       }
     })
     .catch((err) => {
       console.log(err);
-      res.render("pages/login", { message: "Username or password incorrect, please try again" });
+      res.render("pages/login", { message: "Incorrect username or password" });
     });
 });
 
@@ -199,26 +251,50 @@ app.get('/createnewnote', function (req, res) {
     });
 });
 
-app.post('/savenote', function (req, res) {
-  const query =
-  // 'INSERT INTO entries (entry_title, raw_text, username, entry_date) VALUES ($1, $2, $3, $4) RETURNING *;';
-  'INSERT INTO entries (entry_title, raw_text, username, entry_date, journal_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-
-  const date = new Date().toISOString();  // get the current date as an ISO string
-
+app.post('/savenote', async function (req, res) {
+  const {title, rawText, journalId} = req.body;
+  const userId = req.session.user.user_id;
+  const query = 'INSERT INTO entries (entry_title, raw_text, user_id, journal_id, date, time) VALUES ($1, $2, $3, $4, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING entry_id;';
+  const prompt = `Given the following text give me a number 1-5 that represents the mood of the writing with 1 being very sad and 5 being very happy. Only return a digit 1-5 and nothing else: ${rawText}`;
+  const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+    model: "text-davinci-003", //text model being used
+    prompt: prompt, //prompt set above
+    max_tokens: 2048, //max number of word chunks in a single output
+    n: 1, //max number of outputs (only need one)
+    stop: null,
+  });
+  const mood_num = parseInt(completion.data.choices[0].text.trim());
+  const updateQuery = 'UPDATE entries SET entry_mood = $1 WHERE entry_id = $2;'; //update entry content
+  let autoMood = false;
+  console.log(journalId);
+  if (journalId) {
+    const journalAutoQuery = await db.any('SELECT auto_mood AS auto FROM journals WHERE journals.journal_id = $1', [journalId]);
+    autoMood = journalAutoQuery[0].auto;
+  }
   db.any(query, [
-    req.body.entry_title,
-    req.body.raw_text,
-    req.session.user.username,
-    date,
-    req.body.journal_id
+    title,
+    rawText,
+    userId,
+    journalId
   ])
     .then(function (data) {
-      res.status(200).json({
-        status: 'success',
-        data: data,
-        message: 'Note added successfully'
-      });
+      if (autoMood) {
+        db.any(updateQuery, [mood_num, data[0].entry_id])
+        .then(function(data){
+          res.status(200).json({
+            status: 'success',
+            data: data,
+            message: mood_num
+          });
+        })
+        .catch(function (err) {
+          console.error(err);
+          res.status(400).json({
+            status: 'error',
+            message: 'An error occurred while getting mood num'
+          });
+        });
+      }
     })
     .catch(function (err) {
       console.error(err);
@@ -228,6 +304,34 @@ app.post('/savenote', function (req, res) {
       });
     });
 });
+
+// app.post('/getmood', async function (req, res) {
+//   const {text, id } = req.body;
+//   const prompt = `Given the following text give me a only number 1-5 that represents the mood of the writing with 1 being very sad and 5 being very happy: ${text}`;
+//   const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+//     model: "text-davinci-003", //text model being used
+//     prompt: prompt, //prompt set above
+//     max_tokens: 2048, //max number of word chunks in a single output
+//     n: 1, //max number of outputs (only need one)
+//   });
+//   const mood_num = parseInt(completion.data.choices[0].text);
+//   const updateQuery = 'UPDATE entries SET entry_mood = $1 where entry_id = $2;'; //update entry content
+//   db.any(updateQuery, [mood_num, id])
+//     .then(function(data){
+//       res.status(200).json({
+//         status: 'success',
+//         data: data,
+//         message: mood_num
+//       });
+//     })
+//     .catch(function (err) {
+//       console.error(err);
+//       res.status(400).json({
+//         status: 'error',
+//         message: 'An error occurred while saving the note'
+//       });
+//     });
+// });
 
 app.get('/opennote', (req, res) => { 
   const entryId = req.query['entry-id'];
@@ -277,11 +381,15 @@ app.get("/createnewjournal", (req, res) => {
 })
 
 app.post('/savejournal', function (req, res) {
+  const {journal_title, journal_description, auto_mood} = req.body;
+  console.log(auto_mood);
   const query =
-    'INSERT INTO journals (journal_title, journal_description) VALUES ($1, $2) RETURNING *;';
+    'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood) VALUES ($1, $2, $3, $4) RETURNING *;';
   db.any(query, [
-    req.body.journal_title,
-    req.body.journal_description
+    journal_title, 
+    journal_description,
+    req.session.user.user_id,
+    auto_mood
   ])
     .then(function (data) {
       res.status(200).json({
@@ -299,11 +407,12 @@ app.post('/savejournal', function (req, res) {
     });
 });
 
-app.get('/home', (req, res) => {
-  const query = 'SELECT * FROM entries'; // SQL query to retrieve all entries
-  db.any(query)
+app.get('/notes', (req, res) => {
+  const query = 'SELECT * FROM entries WHERE entries.user_id = $1;'; // SQL query to retrieve all entries with current session username
+  const userId = req.session.user.user_id;
+  db.any(query, [req.session.user.user_id])
     .then(function (data) {
-      res.render('pages/home', {entries: data}); // Pass the 'data' to the 'results' variable
+      res.render('pages/notes', {entries: data, id: userId}); // Pass the 'data' to the 'entries' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -315,8 +424,8 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/journal', (req, res) => { 
-  const query = 'SELECT * FROM journals'; // SQL query to retrieve all journals
-  db.any(query)
+  const query = `SELECT * FROM journals WHERE journals.user_id = $1;`; // SQL query to retrieve all journals with current session username
+  db.any(query, [req.session.user.user_id])
     .then(function (data) {
       res.render('pages/journal', {journals: data}); // Pass the 'data' to the 'journals' variable
     })
@@ -324,7 +433,7 @@ app.get('/journal', (req, res) => {
       console.error(err);
       res.status(500).json({
         status: 'error',
-        message: 'An error occurred while fetching notes',
+        message: 'An error occurred while fetching journals',
       });
     });
 });
@@ -374,8 +483,8 @@ app.get('/editjournal', (req, res) => {
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
   const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1;';
-  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null where entry_id = $3;';
-  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3 where entry_id = $4;';
+  const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $3;';
+  const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $4;';
   if(req.body.journal_title != "No Journal") {
   db.one(journalQuery, [
     req.body.journal_title
@@ -389,7 +498,7 @@ app.post('/updatenote', function (req, res) {
     ])
   })
     .then(function (data) {
-      res.redirect('/home');   // go to the home page
+      res.redirect('/notes');   // go to the home page
     })
     .catch(function (err) {
       console.error(err);
@@ -406,7 +515,7 @@ app.post('/updatenote', function (req, res) {
         req.body.id
       ])
       .then(function (data) {
-        res.redirect('/home');   // go to the home page
+        res.redirect('/notes');   // go to the home page
       })
       .catch(function (err) {
         console.error(err);
@@ -445,7 +554,7 @@ app.get('/deletenote', function (req, res) {
   const query = 'DELETE FROM entries WHERE entry_id = $1;';
   db.any(query, [id])
     .then(function (data) {
-      res.redirect('/home');   // go to the home page
+      res.redirect('/notes');   // go to the home page
     })
     .catch(function (err) {
       console.error(err);
@@ -478,8 +587,67 @@ app.get('/mood', (req, res) => {
   res.render("pages/mood");
 });
 
-app.get('/profile', (req, res) => { 
+app.get('/home', async (req, res) => {
+  const userId = req.session.user.user_id;
+  const username = req.session.user.username;
+  try {
+    const hourQuery = await db.any('SELECT TO_CHAR(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24\') as curr_hour');
+    const hour = parseInt(hourQuery[0].curr_hour);
+    const journalCountQuery = await db.any('SELECT * FROM journals WHERE user_id = $1',[userId]);
+    const numJournals = journalCountQuery.length;
+    const entryCountQuery = await db.any('SELECT * FROM entries WHERE user_id = $1',[userId]);
+    const numEntries = entryCountQuery.length;
+    const wordCountQuery = await db.any('SELECT SUM(ARRAY_LENGTH(REGEXP_SPLIT_TO_ARRAY(raw_text, \'\\s+\'), 1)) AS words FROM entries WHERE user_id = $1',[userId]);
+    let numWords = wordCountQuery[0].words;
+    if (numWords == null) {
+      numWords = 0;
+    }
+    const charCountQuery = await db.any('SELECT SUM(LENGTH(raw_text)) AS chars FROM entries WHERE user_id = $1',[userId]);
+    let numChars = charCountQuery[0].chars;
+    if (numChars == null) {
+      numChars = 0;
+    }
+    res.render("pages/home", { name: username, journal_count: numJournals, entry_count: numEntries, word_count: numWords, char_count: numChars, current_hour: hour });
+  } catch (error) {
+    console.error('Error getting journal count', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/profile', (req, res) => {
   res.render("pages/profile");
+});
+
+app.post('/changeusername', async (req,res) => {
+  const id = req.session.user.user_id;
+  const new_username = req.body.new_username;
+  const query = 'UPDATE users SET username = $1 WHERE user_id = $2';
+  try {
+    const result = await db.query(query, [new_username, id]);
+    res.render("pages/profile", {message: 'Username updated successfully.'});
+  } catch (err) {
+    console.error(err);
+    res.render("pages/profile", {message: 'Error updating username.'});
+  }
+});
+
+app.post('/changepassword', async (req,res) => {
+  const id = req.session.user.user_id;
+  const new_password = req.body.new_password;
+  const confirm_new_password = req.body.confirm_new_password;
+  const query = 'UPDATE users SET password = $1 WHERE user_id = $2';
+  if (new_password == confirm_new_password) {
+    const hash = await bcrypt.hash(new_password, 10);
+    try {
+      const result = await db.query(query, [hash, id]);
+      res.render("pages/profile", {message: 'Password updated successfully.'});
+    } catch (err) {
+      console.error(err);
+      res.render("pages/profile", {message: 'Error updating password.'});
+    }
+  } else {
+    res.render("pages/profile", {message: 'Passwords do not match.'});
+  }
 });
 
 app.get('/calendar', (req, res) => {
@@ -488,7 +656,7 @@ app.get('/calendar', (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.render("pages/login", { message: "Sucessfully logged out" });
+  res.render("pages/launch", { message: "Sucessfully logged out" });
 });
 
 // *****************************************************
