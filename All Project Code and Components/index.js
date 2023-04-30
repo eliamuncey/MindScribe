@@ -142,6 +142,38 @@ app.post('/format', async function (req, res) { //async function to await for Ch
     });
 });
 
+app.post('/summarize', async function (req, res) { //async function to await for ChatGPT reply
+  const { raw_text, entry_id } = req.body; //seperates data
+  
+  const prompt = `Summarize the following text while still communicating all the ideas present in the text. Maintain the same style in the summary. Reply with the summarized version of the text, do not include a title:\n\n${raw_text}`;
+  
+  const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+    model: "text-davinci-003", //text model being used
+    prompt: prompt, //prompt set above
+    max_tokens: 2048, //max number of word chunks in a single output
+    n: 1, //max number of outputs (only need one)
+  });
+
+  const summarized_text = completion.data.choices[0].text; //pulling out the text of the first choice from data from completion object
+  
+  const updateQuery = 'UPDATE entries SET raw_text = $1 where entry_id = $2;'; //update entry content
+  db.any(updateQuery, [summarized_text, entry_id])
+    .then(function(data){
+      res.status(200).json({
+        status: 'success',
+        data: data,
+        message: 'Note summarized successfully'
+      });
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(400).json({
+        status: 'error',
+        message: 'An error occurred while saving the note'
+      });
+    });
+});
+
 app.get('/welcome', (req, res) => { //example test case function
   res.json({status: 'success', message: 'Welcome!'});
 });
