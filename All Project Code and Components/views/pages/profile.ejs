@@ -1,66 +1,51 @@
 <%- include ('../partials/head') %>
-<%- include ('../partials/menu') %>
-
+<%- include ('../partials/menu', {active: 'profile'}) %>
+<%- include ('../partials/message') %>
+<link rel="stylesheet" href="/styles/profile.css">
 <main>
     <div class="container">
         <br>
-        <h1>Profile</h1>
-        <hr>
-        <h3><%= name %>, you have scribed...</h3><br>
-        <p>
-        <%= journal_count %>
-        <% if (journal_count == 1) { %>
-            journal,<br>
-        <% } else { %>
-            journals,<br>
-        <% } %>
-        <%= entry_count %>
-        <% if (entry_count == 1) { %>
-            note,<br>
-        <% } else { %>
-            notes,<br>
-        <% } %>
-        <%= word_count %>
-        <% if (word_count == 1) { %>
-            word,<br>
-        <% } else { %>
-            words,<br>
-        <% } %>
-        and <%= char_count %>
-        <% if (char_count == 1) { %>
-            character,<br>
-        <% } else { %>
-            characters<br>
-        <% } %>
-        </p>
-        <hr>
-        <h3>Username</h3>
+        <br>
+        <h1 class="main-text title">Username</h1>
         <br>
         <form action="/changeusername" method="POST">
             <div class="form-group">
-                <label for="new_username">New Username:</label>
+                <label for="new_username" class="main-text subtitle">New Username</label>
                 <input type="text" class="form-control" name="new_username">
                 <br>
-                <button type="submit" class="btn btn-primary">Change Username</button>
+                <button type="submit" class="button">Change Username</button>
             </div>
         </form>
+        <br>
+        <br>
+        <br>
         <hr>
-        <h3>Password</h3>
+        <h1 class="main-text title">Password</h1>
         <br>
         <form action="/changepassword" method="POST">
             <div class="form-group">
-                <label for="new_password">New Password:</label>
+                <label for="new_password" class="main-text subtitle">New Password</label>
                 <input type="password" class="form-control" name="new_password">
-                <label for="confirm_password">Confirm New Password:</label>
+                <br>
+                <label for="confirm_password" class="main-text subtitle">Confirm New Password</label>
                 <input type="password" class="form-control" name="confirm_new_password">
                 <br>
-                <button type="submit" class="btn btn-primary">Change Password</button>
+                <button type="submit" class="button">Change Password</button>
             </div>
         </form>
+        <br>
+        <br>
+        <br>
         <hr>
+        <br>
+        <div class="center">
+            <form action="/logout" method="GET">
+                <button type="submit" class="logout">Log Out</button>
+            </form>
+        </div>
+        <br>
         <br>
     </div>
 </main>
 
-<%- include ('../partials/message') %>
 <%- include ('../partials/footer') %>

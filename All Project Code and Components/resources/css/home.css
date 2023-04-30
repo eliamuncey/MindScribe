@@ -1,0 +1,47 @@
+* {
+    margin:0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.greeting {
+    text-align: center;
+}
+
+.heading {
+    font-size: 50px;
+    margin: 50px;
+    font-weight: bold;
+}
+
+.left {
+    width: 50%;
+    float: left;
+    /* border: 1px solid black; */
+    padding: 2% 5% 5% 10%;
+}
+
+.right {
+    width: 50%;
+    float: right;
+    /* border: 1px solid black; */
+    padding: 2% 10% 5% 5%;
+}
+
+.left h1 {
+    font-size: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.left p {
+    font-size: 25px;
+    line-height: 2;
+}
+
+hr {
+    color: rgb(82, 55, 47);
+    border-top: 3px dotted;
+    margin-right: 30px;
+    margin-left: 30px;
+}
