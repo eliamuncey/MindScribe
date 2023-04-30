@@ -29,6 +29,8 @@
         </div>
         <!-- Button that formats text and sends the entry_id -->
         <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format</button>
+        <!-- Button that summarizes text and sends the entry_id -->
+        <button class="btn btn-primary" onclick="summarizeNote('<%= item.entry_id %>')">Summarize</button>
         <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
         <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
         <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
@@ -68,6 +70,37 @@
       console.error(error);
       // display an error message to the user
       alert('An error occurred while formatting the note');
+    });
+  }
+</script>
+
+<script>
+  // Extracts content and entry_id, creates a data object, and then calls the /summarize endpoint
+  function summarizeNote(entryId) {
+    var content = document.querySelector('#filled-note-text').value.trim(); //extracts content
+    // create a JSON object with the raw_text and entry_id values
+    var data = {
+      raw_text: content,
+      entry_id: entryId
+    };
+  
+    // make a POST request to /summarize and pass in the data as JSON
+    fetch('/summarize', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(data => {
+      // display a success message to the user
+      alert('Note summarized successfully');
+      window.location.href = '/opennote?entry-id=' + entryId; //redirect to the updated note
+    })
+    .catch(error => {
+      console.error(error);
+      // display an error message to the user
+      alert('An error occurred while summarizing the note');
     });
   }
 </script>
