@@ -44,8 +44,8 @@
               'Content-Type': 'application/json' //data in json form so it can be parsed by API call
             },
             body: JSON.stringify({ //converts data to json strings
-              entry_title: title,
-              raw_text: content,
+              title: title,
+              rawText: content
             })
           })
           .then(function(response) {
@@ -58,7 +58,7 @@
           .then(function(data) {
             console.log(data);
             alert('Note saved successfully');
-            window.location.href = 'home';
+            window.location.href = 'notes';
           })
           .catch(function(err) {
             console.error(err);
@@ -72,9 +72,9 @@
               'Content-Type': 'application/json' //data in json form so it can be parsed by API call
             },
             body: JSON.stringify({ //converts data to json strings
-              entry_title: title,
-              raw_text: content,
-              journal_id: value,
+              title: title,
+              rawText: content,
+              journalId: value
             })
           })
           .then(function(response) {

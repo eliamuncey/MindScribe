@@ -13,6 +13,7 @@
 			        <div class="card-body">
 				        <h5 class="card-title"><%= entry.entry_title %></h5>
 				        <p class="card-text"><%= entry.raw_text %></p>
+                <p class="card-text">Mood number: <%= entry.entry_mood %></p>
                 <p class="card-text"><%= entry.date %></p>
                 <p class="card-text"><%= entry.time %></p>
                 <form action="/opennote">
