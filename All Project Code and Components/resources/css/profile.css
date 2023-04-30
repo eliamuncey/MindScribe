@@ -8,13 +8,7 @@
     background-color: rgb(156, 123, 114);
 }
 
-.wrapper {
-    min-height: 100%;
-    margin-bottom: -50px;
-}
-
 body {
-    height: 100%;
     background-color: rgb(249, 246, 240);
 }
 
@@ -22,12 +16,6 @@ body {
     width: 40px;
     margin: 5px;
     margin-left: 30px;
-}
-
-.container {
-    justify-content: center;
-    align-items: center;
-    width: 40%;
 }
 
 .all-buttons {
@@ -51,26 +39,43 @@ a:hover {
     color: rgb(82, 55, 47) !important;
 }
 
-#title {
+.title {
     font-weight: bold;
-    font-size: 70px;
+    font-size: 50px;
 }
 
-#subtitle {
-    font-size: 30px;
+.subtitle {
+    font-size: 20px;
 }
 
-#button {
+.button {
     background-color: rgb(156, 123, 114);
     border: none;
     text-align: center;
-    width: 125px;
-    height: 50px;
+    width: 150px;
+    height: 40px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 15px;
+    float: left;
+}
+
+.logout {
+    background-color: rgb(155, 146, 146);
+    border: none;
+    text-align: center;
+    width: 200px;
+    height: 60px;
     border-radius: 10px;
     color: white;
     font-family: 'Urbanist', sans-serif;
     font-size: 25px;
-    float: left;
+    text-align-last: center;
+}
+
+hr {
+    color: rgb(82, 55, 47);
 }
 
 input[type=password] {

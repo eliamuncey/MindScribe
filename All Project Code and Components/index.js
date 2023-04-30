@@ -162,6 +162,10 @@ app.get('/register', (req, res) => {
   res.render("pages/register");
 });
 
+// app.get('/home', (req, res) => {
+//   res.render("pages/home");
+// })
+
 app.post('/register', async (req, res) => {
 
   const username = req.body.username;
@@ -178,9 +182,10 @@ app.post('/register', async (req, res) => {
       const hash = await bcrypt.hash(password, 10);
       db.any(insert, [username, hash])
       .then(function (data) {
-        req.session.user = data;
-        req.session.save();
-        res.redirect('/home');
+        // req.session.user = data;
+        // req.session.save();
+        // res.redirect('/home');
+        res.render("pages/login", {message: 'Welcome to MindScribe!'});
       })
       .catch((err) => {
         res.render("pages/register", {message: 'Could not create account'});
@@ -342,12 +347,12 @@ app.post('/savejournal', function (req, res) {
     });
 });
 
-app.get('/home', (req, res) => {
+app.get('/notes', (req, res) => {
   const query = 'SELECT * FROM entries WHERE entries.user_id = $1;'; // SQL query to retrieve all entries with current session username
   const userId = req.session.user.user_id;
   db.any(query, [req.session.user.user_id])
     .then(function (data) {
-      res.render('pages/home', {entries: data, id: userId}); // Pass the 'data' to the 'entries' variable
+      res.render('pages/notes', {entries: data, id: userId}); // Pass the 'data' to the 'entries' variable
     })
     .catch(function (err) {
       console.error(err);
@@ -433,7 +438,7 @@ app.post('/updatenote', function (req, res) {
     ])
   })
     .then(function (data) {
-      res.redirect('/home');   // go to the home page
+      res.redirect('/notes');   // go to the home page
     })
     .catch(function (err) {
       console.error(err);
@@ -450,7 +455,7 @@ app.post('/updatenote', function (req, res) {
         req.body.id
       ])
       .then(function (data) {
-        res.redirect('/home');   // go to the home page
+        res.redirect('/notes');   // go to the home page
       })
       .catch(function (err) {
         console.error(err);
@@ -489,7 +494,7 @@ app.get('/deletenote', function (req, res) {
   const query = 'DELETE FROM entries WHERE entry_id = $1;';
   db.any(query, [id])
     .then(function (data) {
-      res.redirect('/home');   // go to the home page
+      res.redirect('/notes');   // go to the home page
     })
     .catch(function (err) {
       console.error(err);
@@ -522,9 +527,12 @@ app.get('/mood', (req, res) => {
   res.render("pages/mood");
 });
 
-app.get('/profile', async (req, res) => {
+app.get('/home', async (req, res) => {
   const userId = req.session.user.user_id;
+  const username = req.session.user.username;
   try {
+    const hourQuery = await db.any('SELECT TO_CHAR(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24\') as curr_hour');
+    const hour = parseInt(hourQuery[0].curr_hour);
     const journalCountQuery = await db.any('SELECT * FROM journals WHERE user_id = $1',[userId]);
     const numJournals = journalCountQuery.length;
     const entryCountQuery = await db.any('SELECT * FROM entries WHERE user_id = $1',[userId]);
@@ -539,11 +547,15 @@ app.get('/profile', async (req, res) => {
     if (numChars == null) {
       numChars = 0;
     }
-    res.render("pages/profile", { name: req.session.user.username, journal_count: numJournals, entry_count: numEntries, word_count: numWords, char_count: numChars });
+    res.render("pages/home", { name: username, journal_count: numJournals, entry_count: numEntries, word_count: numWords, char_count: numChars, current_hour: hour });
   } catch (error) {
     console.error('Error getting journal count', error);
     res.status(500).send('Internal Server Error');
   }
+});
+
+app.get('/profile', (req, res) => {
+  res.render("pages/profile");
 });
 
 app.post('/changeusername', async (req,res) => {
@@ -584,7 +596,7 @@ app.get('/calendar', (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.render("pages/login", { message: "Sucessfully logged out" });
+  res.render("pages/launch", { message: "Sucessfully logged out" });
 });
 
 // *****************************************************
