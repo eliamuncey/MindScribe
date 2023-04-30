@@ -73,11 +73,33 @@ a:hover {
     float: left;
 }
 
-input[type=password] {
-    border-color: rgb(156, 123, 114);
+input, label {
+    display: block;
+}
+
+input {
+    border: 2px solid rgb(156, 123, 114);
+    color: rgb(156, 123, 114) !important;
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    /* caret-color:rgb(156, 123, 114); */
+    caret-color: transparent;
+    height: 40px !important;
 }
 
 input[type=text] {
-    border-color: rgb(156, 123, 114);
     font-family: 'Urbanist', sans-serif;
+}
+
+input[type=password] {
+    font-size:40px;
+    /* transform: scale(2); */
+    /* transform-origin: left center; */
+}
+
+input:focus {
+    outline: 1.5px solid rgb(156, 123, 114);
 }

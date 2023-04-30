@@ -1,5 +1,5 @@
 <%- include ('../partials/head') %>
-<%- include ('../partials/menu') %>
+<%- include ('../partials/menu', {active: 'journal'}) %>
 
 <main>
   <div class="container">
@@ -16,6 +16,9 @@
         <p><span class="char-count">0/200</span></p>
       </div>
 
+      <label for="mood_auto">Enable Automatic Mood Analysis</label>
+      <input id="auto" type="checkbox" name="mood_auto" value=true>
+
       <%# Save Button %>
       <div class="mt-3 text-center">
         <button id="save-journal" class="btn btn-primary">Save Journal</button>
@@ -26,6 +29,7 @@
         saveJournalButton.addEventListener('click', function() { //on click of Save Journal
         var title = document.querySelector('#journal-title').value.trim(); //gets title
           var content = document.querySelector('#journal-description').value.trim(); //gets description
+          var autoMood = document.querySelector('#auto').checked;
           fetch('/savejournal', { //calls /savejournal and passes journal info
           method: 'POST',
           headers: {
@@ -33,7 +37,8 @@
           },
           body: JSON.stringify({ //converts data to json strings
             journal_title: title,
-            journal_description: content
+            journal_description: content,
+            auto_mood: autoMood
           })
         })
         .then(function(response) {

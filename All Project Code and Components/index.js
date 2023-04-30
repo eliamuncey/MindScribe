@@ -251,21 +251,50 @@ app.get('/createnewnote', function (req, res) {
     });
 });
 
-app.post('/savenote', function (req, res) {
-  const query = 'INSERT INTO entries (entry_title, raw_text, user_id, journal_id, date, time) VALUES ($1, $2, $3, $4, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING *;';
-
+app.post('/savenote', async function (req, res) {
+  const {title, rawText, journalId} = req.body;
+  const userId = req.session.user.user_id;
+  const query = 'INSERT INTO entries (entry_title, raw_text, user_id, journal_id, date, time) VALUES ($1, $2, $3, $4, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING entry_id;';
+  const prompt = `Given the following text give me a number 1-5 that represents the mood of the writing with 1 being very sad and 5 being very happy. Only return a digit 1-5 and nothing else: ${rawText}`;
+  const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+    model: "text-davinci-003", //text model being used
+    prompt: prompt, //prompt set above
+    max_tokens: 2048, //max number of word chunks in a single output
+    n: 1, //max number of outputs (only need one)
+    stop: null,
+  });
+  const mood_num = parseInt(completion.data.choices[0].text.trim());
+  const updateQuery = 'UPDATE entries SET entry_mood = $1 WHERE entry_id = $2;'; //update entry content
+  let autoMood = false;
+  console.log(journalId);
+  if (journalId) {
+    const journalAutoQuery = await db.any('SELECT auto_mood AS auto FROM journals WHERE journals.journal_id = $1', [journalId]);
+    autoMood = journalAutoQuery[0].auto;
+  }
   db.any(query, [
-    req.body.entry_title,
-    req.body.raw_text,
-    req.session.user.user_id,
-    req.body.journal_id
+    title,
+    rawText,
+    userId,
+    journalId
   ])
     .then(function (data) {
-      res.status(200).json({
-        status: 'success',
-        data: data,
-        message: 'Note added successfully'
-      });
+      if (autoMood) {
+        db.any(updateQuery, [mood_num, data[0].entry_id])
+        .then(function(data){
+          res.status(200).json({
+            status: 'success',
+            data: data,
+            message: mood_num
+          });
+        })
+        .catch(function (err) {
+          console.error(err);
+          res.status(400).json({
+            status: 'error',
+            message: 'An error occurred while getting mood num'
+          });
+        });
+      }
     })
     .catch(function (err) {
       console.error(err);
@@ -275,6 +304,34 @@ app.post('/savenote', function (req, res) {
       });
     });
 });
+
+// app.post('/getmood', async function (req, res) {
+//   const {text, id } = req.body;
+//   const prompt = `Given the following text give me a only number 1-5 that represents the mood of the writing with 1 being very sad and 5 being very happy: ${text}`;
+//   const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
+//     model: "text-davinci-003", //text model being used
+//     prompt: prompt, //prompt set above
+//     max_tokens: 2048, //max number of word chunks in a single output
+//     n: 1, //max number of outputs (only need one)
+//   });
+//   const mood_num = parseInt(completion.data.choices[0].text);
+//   const updateQuery = 'UPDATE entries SET entry_mood = $1 where entry_id = $2;'; //update entry content
+//   db.any(updateQuery, [mood_num, id])
+//     .then(function(data){
+//       res.status(200).json({
+//         status: 'success',
+//         data: data,
+//         message: mood_num
+//       });
+//     })
+//     .catch(function (err) {
+//       console.error(err);
+//       res.status(400).json({
+//         status: 'error',
+//         message: 'An error occurred while saving the note'
+//       });
+//     });
+// });
 
 app.get('/opennote', (req, res) => { 
   const entryId = req.query['entry-id'];
@@ -324,12 +381,15 @@ app.get("/createnewjournal", (req, res) => {
 })
 
 app.post('/savejournal', function (req, res) {
+  const {journal_title, journal_description, auto_mood} = req.body;
+  console.log(auto_mood);
   const query =
-    'INSERT INTO journals (journal_title, journal_description, user_id) VALUES ($1, $2, $3) RETURNING *;';
+    'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood) VALUES ($1, $2, $3, $4) RETURNING *;';
   db.any(query, [
-    req.body.journal_title,
-    req.body.journal_description,
-    req.session.user.user_id
+    journal_title, 
+    journal_description,
+    req.session.user.user_id,
+    auto_mood
   ])
     .then(function (data) {
       res.status(200).json({

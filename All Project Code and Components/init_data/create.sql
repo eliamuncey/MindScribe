@@ -10,7 +10,8 @@ CREATE TABLE journals(
 journal_id SERIAL PRIMARY KEY,
 journal_title TEXT,
 journal_description TEXT,
-user_id INT REFERENCES users(user_id)
+user_id INT REFERENCES users(user_id),
+auto_mood BOOLEAN DEFAULT FALSE
 );
 
 DROP TABLE IF EXISTS entries CASCADE;
