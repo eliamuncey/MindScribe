@@ -318,6 +318,7 @@ app.post('/savenote', async function (req, res) {
             data: data,
             message: mood_num
           });
+          res.redirect('/notes');
         })
         .catch(function (err) {
           console.error(err);
@@ -326,6 +327,9 @@ app.post('/savenote', async function (req, res) {
             message: 'An error occurred while getting mood num'
           });
         });
+      }
+      else {
+        res.redirect('/notes');
       }
     })
     .catch(function (err) {
