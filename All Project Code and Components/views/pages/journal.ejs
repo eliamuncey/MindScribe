@@ -1,16 +1,17 @@
 <%- include ('../partials/head') %>
 <%- include ('../partials/menu', {active: 'journal'}) %>
-
+<link rel=stylesheet href="styles/allnotes.css"
 <main>
     <div class="container">
+        <div>
+          
+          <form action="/createnewjournal">
+            <h1 class="heading main-text">Journals</h1><button type="submit" class="button" style="width: 180px; margin-left: 50px;">Create New Journal</button>
+          </form>
+        </div>
         <br>
-        <h1>Journals</h1>
         <br>
-
-        <form action="/createnewjournal">
-          <button type="submit" class="btn btn-primary">Create New Journal</button>
-        </form>
-
+        <br>
         <br>
         <div class="row">
           <% if(journals) { %>

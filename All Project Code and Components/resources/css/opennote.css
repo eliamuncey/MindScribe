@@ -107,6 +107,7 @@ input::placeholder, textarea::placeholder {
     font-family: 'Urbanist', sans-serif;
     font-size: 20px;
     float: left;
+    margin-right: 30px;
 }
 
 button:disabled {
@@ -115,4 +116,14 @@ button:disabled {
 
 textarea {
     height: 37vh;
+}
+
+.edit {
+    padding-top:10px;
+    font-weight: normal;
+}
+
+a:hover {
+    color: white;
+    cursor: default;
 }

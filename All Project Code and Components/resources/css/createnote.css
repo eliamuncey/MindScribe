@@ -88,7 +88,7 @@ input::placeholder, textarea::placeholder {
     border: 2px solid rgb(156, 123, 114);
     color: rgb(156, 123, 114) !important;
     padding: 8px;
-    border-radius: 5px;
+    border-radius: 5px !important;
     padding-left: 16px;
     padding-right: 16px;
     /* caret-color:rgb(156, 123, 114); */
@@ -118,5 +118,16 @@ button:disabled {
 }
 
 textarea {
-    height: 37vh;
+    height: 30vh;
+}
+
+.cancel {
+    padding-top:10px;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+a:hover {
+    color: white;
+    cursor: default;
 }
