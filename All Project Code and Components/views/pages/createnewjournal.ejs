@@ -6,8 +6,18 @@
     <body>
       <br>
       <%# Journal Title Entry%>
-      <input id="journal-title" type="text" class="form-control char-limited" aria-label="Text input" placeholder="Journal Title" maxlength="100">
-      <p><span class="char-count">0/100</span></p>
+      <div class="input-group mb-3">
+        <select id="color-select">
+          <option class="dropdown-item" value="black">Select Color</option>
+          <option class="dropdown-item" value="black">Black</option>
+          <option class="dropdown-item" value="white">White</option>
+          <option class="dropdown-item" value="blue">Blue</option>
+          <option class="dropdown-item" value="red">Red</option>
+          <option class="dropdown-item" value="cherry">Cherry Blossom</option>
+        </select>
+        <input id="journal-title" type="text" class="form-control char-limited" aria-label="Text input" placeholder="Journal Title" maxlength="100">
+        <p><span class="char-count">0/100</span></p>
+      </div>
       <br>
 
       <%# Journal Description Entry %>
@@ -30,6 +40,8 @@
         var title = document.querySelector('#journal-title').value.trim(); //gets title
           var content = document.querySelector('#journal-description').value.trim(); //gets description
           var autoMood = document.querySelector('#auto').checked;
+          var colorSelector = document.getElementById("color-select");
+          var journalColor = colorSelector.value;
           fetch('/savejournal', { //calls /savejournal and passes journal info
           method: 'POST',
           headers: {
@@ -38,7 +50,8 @@
           body: JSON.stringify({ //converts data to json strings
             journal_title: title,
             journal_description: content,
-            auto_mood: autoMood
+            auto_mood: autoMood,
+            color: journalColor
           })
         })
         .then(function(response) {
