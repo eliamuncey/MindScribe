@@ -287,18 +287,18 @@ app.post('/savenote', async function (req, res) {
   const {title, rawText, journalId} = req.body;
   const userId = req.session.user.user_id;
   const query = 'INSERT INTO entries (entry_title, raw_text, user_id, journal_id, date, time) VALUES ($1, $2, $3, $4, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING entry_id;';
+  const noJournalQuery = 'INSERT INTO entries (entry_title, raw_text, user_id, date, time) VALUES ($1, $2, $3, to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\')) RETURNING entry_id;';
   const prompt = `Given the following text give me a number 1-5 that represents the mood of the writing with 1 being very sad and 5 being very happy. Only return a digit 1-5 and nothing else: ${rawText}`;
   const completion = await openai.createCompletion({ //createCompletion is a OpenAI keyword to complete a prompt, await for ChatGPT reply
     model: "text-davinci-003", //text model being used
     prompt: prompt, //prompt set above
     max_tokens: 2048, //max number of word chunks in a single output
     n: 1, //max number of outputs (only need one)
-    stop: null,
+    stop: null
   });
   const mood_num = parseInt(completion.data.choices[0].text.trim());
   const updateQuery = 'UPDATE entries SET entry_mood = $1 WHERE entry_id = $2;'; //update entry content
   let autoMood = false;
-  console.log(journalId);
   if (journalId) {
     const journalAutoQuery = await db.any('SELECT auto_mood AS auto FROM journals WHERE journals.journal_id = $1', [journalId]);
     autoMood = journalAutoQuery[0].auto;
@@ -415,7 +415,6 @@ app.get("/createnewjournal", (req, res) => {
 
 app.post('/savejournal', function (req, res) {
   const {journal_title, journal_description, auto_mood, color} = req.body;
-  console.log(auto_mood);
   const query =
     'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood, color) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
   db.any(query, [

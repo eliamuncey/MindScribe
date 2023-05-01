@@ -1,7 +1,8 @@
 <%- include('../partials/head') %>
 <%- include('../partials/menu', {active: 'createnote'}) %>
-
+<link rel="stylesheet" href="styles/opennote.css">
 <main>
+  <br>
   <br>
   <div class="container">
     <% if (entry) { %>
@@ -9,35 +10,39 @@
       <% entry.forEach(function (item) { %>
         <!-- Displays a journal selector drop-down based on the journal that has been selected
         or "No Journal" if no journal has been selected-->
-        <div class="input-group mb-3"> 
-        <% if (item.journal_title == null) { %>
-            <select id="journal-select-nojournal">
-                <option class="dropdown-item" href="#">No Journal</option>
-            </select>
-        <% } else { %>
-            <select id="journal-select">
-                <option class="dropdown-item" href="#"><%= item.journal_title %></option>
-            </select>
-        <% } %>
-            <!--Displays Title Bar -->
-          <input id="filled-note-title" type="text" class="form-control" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+        <div class="journal-title">
+          <% if (item.journal_title == null) { %>
+            <!-- <select id="journal-select-nojournal">
+              <option href="#">No Journal</option>
+            </select><input id="filled-note-title" type="text" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly> -->
+            <!-- <input id="journal" id="journal-select-nojournal"> -->
+            <label for="filled-note-title">No Journal</label><input id="filled-note-title" type="text" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+          <% } else { %>
+            <!-- <select id="journal-select">
+              <option href="#">No Journal</option>
+            </select><input id="filled-note-title" type="text" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly> -->
+            <label for="filled-note-title"><%= item.journal_title %></label><input id="filled-note-title" type="text" aria-label="Text input" placeholder="No Title" value="<%= item.entry_title %>" readonly>
+          <% } %>
         </div>
         <br>
+        <br>
+        <br>
         <!-- Displays note contents -->
-        <div class="input-group">
-          <textarea id="filled-note-text" class="form-control" aria-label="With textarea" style="height: 400px;" readonly><%= item.raw_text %></textarea>
+        <div>
+          <textarea id="filled-note-text" class="note-input" aria-label="With textarea" readonly><%= item.raw_text %></textarea>
         </div>
         <!-- Button that formats text and sends the entry_id -->
         <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format</button>
         <!-- Button that summarizes text and sends the entry_id -->
         <button class="btn btn-primary" onclick="summarizeNote('<%= item.entry_id %>')">Summarize</button>
         <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary btn-sm">Edit</a>
-        <!-- Button to delete an entry; pass the ID on the URL as a query parameter -->
-        <a href="/deletenote?id=<%= item.entry_id %>" class="btn btn-danger">Delete<a> 
+        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary">Edit</a>
+        
+
       <% }) %>
     <% } %>
   </div>
+  <br/>
 </main>
 
 <%- include('../partials/message') %>
