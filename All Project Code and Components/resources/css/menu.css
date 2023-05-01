@@ -8,11 +8,6 @@
     background-color: rgb(156, 123, 114);
 }
 
-.wrapper {
-    min-height: 100%;
-    margin-bottom: -50px;
-}
-
 body {
     height: 100%;
     background-color: rgb(249, 246, 240);

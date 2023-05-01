@@ -1,0 +1,118 @@
+* {
+    margin:0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.main-text {
+    font-family: 'Urbanist', sans-serif;
+    color: rgb(82, 55, 47) !important;
+}
+
+.container {
+    height: 83vh;
+}
+
+#journal {
+    width: 25%;
+    border: 2px solid rgb(156, 123, 114);
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    background-color:rgb(156, 123, 114);
+    color: white;
+    padding: 10px; 
+}
+
+.journal-title {
+    display: inline;
+    flex-direction: column;
+}
+
+.journal-title label, input {
+    vertical-align: middle;
+    margin: 0;
+    padding: 5px;
+    height: 60px;
+    font-size: 30px;
+}
+
+.journal-title label {
+    width: 25%;
+    border: 2px solid rgb(156, 123, 114);
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    background-color:rgb(156, 123, 114);
+    color: white;
+    padding: 10px; 
+    padding-left: 20px;
+    padding-top: 5px;
+}
+
+.journal-title input {
+    width: 75%;
+    border-radius: 0 5px 5px 0;
+}
+
+.chars {
+    display: block;
+    float: right;
+    color:rgb(156, 123, 114);
+}
+
+input {
+    border: 2px solid rgb(156, 123, 114);
+    color: rgb(156, 123, 114) !important;
+    padding: 8px;
+    border-radius: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    /* caret-color:rgb(156, 123, 114); */
+    caret-color: transparent;
+}
+
+input:focus, textarea:focus {
+    outline: 1px solid rgb(82, 55, 47);
+}
+
+input::placeholder, textarea::placeholder {
+    color:rgb(156, 123, 114);
+    opacity: 50%;
+}
+
+.note-input {
+    width: 100%;
+    border: 2px solid rgb(156, 123, 114);
+    color: rgb(156, 123, 114) !important;
+    padding: 8px;
+    border-radius: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    /* caret-color:rgb(156, 123, 114); */
+    caret-color: transparent;
+}
+
+.save {
+    display: flex;
+    justify-content: right;
+}
+
+.button {
+    background-color: rgb(156, 123, 114);
+    border: none;
+    text-align: center;
+    width: 125px;
+    height: 50px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Urbanist', sans-serif;
+    font-size: 20px;
+    float: left;
+}
+
+button:disabled {
+    background-color: rgb(155, 146, 146);
+}
+
+textarea {
+    height: 37vh;
+}
