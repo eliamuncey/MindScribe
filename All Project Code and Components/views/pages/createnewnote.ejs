@@ -45,20 +45,22 @@
             },
             body: JSON.stringify({ //converts data to json strings
               title: title,
-              rawText: content
+              rawText: content,
+              journalId: undefined
             })
           })
           .then(function(response) {
             if (response.ok) {
-              return response.json();
+              console.log(response)
+              // display a success message to the user
+              alert('Note saved successfully');
+              window.location.href = '/home'; //redirect to the updated note
             } else {
               throw new Error('An error occurred while saving the note');
             }
           })
           .then(function(data) {
             console.log(data);
-            alert('Note saved successfully');
-            window.location.href = 'notes';
           })
           .catch(function(err) {
             console.error(err);
@@ -79,20 +81,19 @@
           })
           .then(function(response) {
             if (response.ok) {
-              return response.json();
+             // display a success message to the user
+              alert('Note saved successfully');
+             window.location.href = '/home'; //redirect to the updated note
             } else {
               throw new Error('An error occurred while saving the note');
             }
           })
           .then(function(data) {
             console.log(data);
-            alert('Note saved successfully');
-            window.location.href = 'home';
           })
           .catch(function(err) {
             console.error(err);
             alert(err.message);
-            
           });
         }
         });
