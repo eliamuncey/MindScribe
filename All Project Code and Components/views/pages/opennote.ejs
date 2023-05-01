@@ -31,12 +31,13 @@
         <div>
           <textarea id="filled-note-text" class="note-input" aria-label="With textarea" readonly><%= item.raw_text %></textarea>
         </div>
+        <br>
         <!-- Button that formats text and sends the entry_id -->
-        <button class="btn btn-primary" onclick="formatNote('<%= item.entry_id %>')">Format</button>
+        <button class="button" onclick="formatNote('<%= item.entry_id %>')">Format</button>
         <!-- Button that summarizes text and sends the entry_id -->
-        <button class="btn btn-primary" onclick="summarizeNote('<%= item.entry_id %>')">Summarize</button>
+        <button class="button" onclick="summarizeNote('<%= item.entry_id %>')">Summarize</button>
         <!-- Button to edit an entry; pass the ID on the URL as a query parameter -->
-        <a href="/edit?id=<%= item.entry_id %>" class="btn btn-primary">Edit</a>
+        <a href="/edit?id=<%= item.entry_id %>" class="button edit" style="text-decoration:none;">Edit</a>
         
 
       <% }) %>

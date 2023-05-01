@@ -1,6 +1,6 @@
 <%- include('../partials/head') %>
 <%- include('../partials/menu', {active: 'journal'}) %>
-
+<link rel="stylesheet" href="styles/allnotes.css">
 <main>
     <div class="container">
         <br>
@@ -24,9 +24,23 @@
                   <form action="/opennote">
                     <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
                     <button type="submit" class="btn btn-primary-outline stretched-link"><h5 class="card-title"><%= entry.entry_title %></h5></button>
+                    <% if (entry.entry_mood) { %>
+                      <!-- <p class="card-text">Mood number: <%= entry.entry_mood %></p> -->
+                        <% if (entry.entry_mood == 1) { %>
+                          <img src="images/1.svg" width="40" style="float:right;">
+                        <% } else if (entry.entry_mood == 2) { %>
+                          <img src="images/2.svg" width="40" style="float:right;">
+                        <% } else if (entry.entry_mood == 3) { %>
+                          <img src="images/3.svg" width="40" style="float:right;">
+                        <% } else if (entry.entry_mood == 4) { %>
+                          <img src="images/4.svg" width="40" style="float:right;">
+                        %> } else if (entry.entry_mood == 5) { %>
+                          <img src="images/5.svg" width="40" style="float:right;">
+                        <% } %>
+                    <% } %>
                   </form>
                   <p class="card-text" style="width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= entry.raw_text %></p>
-                  <p class="card-text">Mood number: <%= entry.entry_mood %></p>
+
                   <p class="card-text"><%= entry.date %></p>
                   <p class="card-text"><%= entry.time %></p>
               </div>

@@ -19,8 +19,8 @@
 }
 
 .left {
-    width: 50%;
-    float: left;
+    width: 100%;
+    text-align: center;
     /* border: 1px solid black; */
     padding: 2% 5% 5% 10%;
 }
