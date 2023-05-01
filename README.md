@@ -19,4 +19,4 @@ Jared Roberts<br>
 "testandrun": "npm run prestart && npm run test && npm run start"
 This will ensure that the application will run all test cases properly, as well as start up correctly.</p>
 <h2>Application Access</h2>
-<p>The application is currently not deployed. The application will be deployed by the final release.</p>
+<p>The application is currently not deployed. The application has been deployed to Microsoft Azure sucessfully for demos.</p>
