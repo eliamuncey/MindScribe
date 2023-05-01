@@ -267,8 +267,8 @@ app.use(auth);
 
 app.get('/createnewnote', function (req, res) {
   const query =
-    'SELECT * FROM journals;';
-  db.any(query)
+    'SELECT * FROM journals WHERE user_id = $1;';
+  db.any(query, [req.session.user.user_id])
     .then(function (data) {
       res.render('pages/createnewnote', {
         journals: data
@@ -367,9 +367,9 @@ app.post('/savenote', async function (req, res) {
 
 app.get('/opennote', (req, res) => { 
   const entryId = req.query['entry-id'];
-  const query = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1'; 
+  const query = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1 AND entries.user_id = $2'; 
   // SQL query to retrive journal info from correct entry_id, LEFT JOIN for entries without a journal_id
-  db.any(query, [entryId])
+  db.any(query, [entryId, req.session.user.user_id])
     .then(function (data) {
       res.render('pages/opennote', {entry: data}); // Pass the 'data' to the 'entry' variable
     })
@@ -385,10 +385,11 @@ app.get('/opennote', (req, res) => {
 app.get('/openjournal', (req, res) => { 
   // Fetch query parameters from the request object
   var journal = req.query['journal-id'];
+  var userId = req.session.user.user_id
 
   // Multiple queries using templated strings
-  var current_journal = `select * from journals where journal_id = '${journal}';`;
-  var entries = `select * from entries where journal_id = '${journal}';`;
+  var current_journal = `select * from journals where journal_id = '${journal}' AND user_id = '${userId}';`;
+  var entries = `select * from entries where journal_id = '${journal}' AND user_id = '${userId}';`;
 
   db.task('get-data', task => {
     return task.batch([task.one(current_journal), task.any(entries)]);
@@ -474,11 +475,11 @@ app.get('/journal', (req, res) => {
 app.get('/edit', (req, res) => {
   var id = req.query.id;  // get the ID from the ID query parmater in the URL
   const entryQuery = 'SELECT entries.*, journals.journal_title FROM entries LEFT JOIN journals ON entries.journal_id = journals.journal_id WHERE entries.entry_id = $1';
-  const journalQuery = 'SELECT * FROM journals;';
+  const journalQuery = 'SELECT * FROM journals WHERE user_id = $1;';
   db.task(function (t) {
     return t.batch([
       t.any(entryQuery, [id]), // execute the entryQuery and pass the entry_id parameter
-      t.any(journalQuery), // execute the journalQuery
+      t.any(journalQuery, [req.session.user.user_id]), // execute the journalQuery
     ]);
   })
     .then(function (data) {
@@ -497,8 +498,8 @@ app.get('/edit', (req, res) => {
 // Get the journal entry from the database then enter the edit journal page with the contents of the journal
 app.get('/editjournal', (req, res) => {
   var id = req.query.id;  // get the ID from the ID query parmater in the URL
-  const query = "SELECT * FROM journals where journal_id = $1;"; // SQL query to retrieve all entries
-  db.any(query, [id]) 
+  const query = "SELECT * FROM journals where journal_id = $1 AND user_id = $2;"; // SQL query to retrieve all entries
+  db.any(query, [id, req.session.user.user_id]) 
     .then(function (data) {
       res.render('pages/editjournal', {results: data}); // Pass the 'data' to the 'results' variable in the home page
     })
@@ -514,12 +515,13 @@ app.get('/editjournal', (req, res) => {
 
 // Save an edited note - update the text in the database
 app.post('/updatenote', function (req, res) {
-  const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1;';
+  const journalQuery = 'SELECT * FROM journals WHERE journals.journal_title = $1 AND user_id = $2;';
   const noJournalQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = null, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $3;';
   const updateQuery = 'UPDATE entries SET entry_title = $1, raw_text = $2, journal_id = $3, date = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'MM/DD/YYYY\'), time = to_char(CURRENT_TIMESTAMP AT TIME ZONE \'MDT\', \'HH24:MI\') where entry_id = $4;';
   if(req.body.journal_title != "No Journal") {
   db.one(journalQuery, [
-    req.body.journal_title
+    req.body.journal_title,
+    req.session.user.user_id
   ])
   .then(function (data){
     db.any(updateQuery, [

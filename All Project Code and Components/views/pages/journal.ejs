@@ -1,8 +1,8 @@
 <%- include ('../partials/head') %>
 <%- include ('../partials/menu', {active: 'journal'}) %>
 
-<main>
-    <div class="container">
+<main>  
+  <div class="container">
         <br>
         <h1>Journals</h1>
         <br>
@@ -12,6 +12,8 @@
       </form>
 
         <br>
+        <!--<div class="row" style="background-image: url('/images/shelf4.png'); background-size: contain;">-->
+
         <div class="row">
           <% if(journals) { %>
             <% journals.forEach(function (journal) { %>
@@ -28,6 +30,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             <% }) %>
           <% } %>
         </div>

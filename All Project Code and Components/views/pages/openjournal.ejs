@@ -21,12 +21,14 @@
             <div class="col">
               <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                  <h5 class="card-title"><%= entry.entry_title %></h5>
-                  <p class="card-text"><%= entry.raw_text %></p>
                   <form action="/opennote">
                     <input type="hidden" name="entry-id" value=<%= entry.entry_id %>>
-                    <button type="submit" class="btn btn-primary">Open Note</button>
+                    <button type="submit" class="btn btn-primary-outline stretched-link"><h5 class="card-title"><%= entry.entry_title %></h5></button>
                   </form>
+                  <p class="card-text"><%= entry.raw_text %></p>
+                  <p class="card-text">Mood number: <%= entry.entry_mood %></p>
+                  <p class="card-text"><%= entry.date %></p>
+                  <p class="card-text"><%= entry.time %></p>
               </div>
             </div>
           </div>
