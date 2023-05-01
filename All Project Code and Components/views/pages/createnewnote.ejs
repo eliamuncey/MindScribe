@@ -1,37 +1,48 @@
 <%- include ('../partials/head') %>
 <%- include ('../partials/menu', {active: 'createnote'}) %>
-
+<link rel="stylesheet" href="styles/createnote.css">
 <main>
   <div class="container">
     <body>
       <br>
       <%# Journal Selection Dropdown and Title Entry%>
-      <div class="input-group mb-3"> 
+      <br>
+      <div class="journal-title">
+        <select id="journal-select">
+          <option href="#" journal-id="None" journal-title="None">Select Journal</option>
+          <% for (var i = 0; i < journals.length; i++) { %>
+            <option href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
+          <% } %>
+        </select><input id="note-title" type="text" class="char-limited" aria-label="Text input with dropdown button" placeholder="Title" maxlength="100">
+        <p class="chars"><span class="char-count">0/100</span></p>
+      </div>
+
+      <!-- <div class="input-group"> 
           <select id="journal-select">
             <option class="dropdown-item" href="#" journal-id="None" journal-title="None">Select Journal</option>
             <% for (var i = 0; i < journals.length; i++) { %>
               <option class="dropdown-item" href="#" journal-id="<%= journals[i].journal_id %>" journal-title="<%= journals[i].journal_title %>"><%= journals[i].journal_title %></option>
             <% } %>
           </select>
-        <input id="note-title" type="text" class="form-control char-limited" aria-label="Text input with dropdown button" placeholder="Enter Title" maxlength="100">
-        <p><span class="char-count">0/100</span></p>
+        <input id="note-title" type="text" class="char-limited" aria-label="Text input with dropdown button" placeholder="Enter Title" maxlength="100">
+        <p class="chars"><span class="char-count">0/100</span></p>
+      </div> -->
+      <br>
+      <br>
+      <%# Note Entry %>
+      <div>
+        <textarea id="note-text" class="note-input" aria-label="With textarea" placeholder="Note"></textarea>
       </div>
       <br>
-
-      <%# Note Entry %>
-      <div class="input-group">
-        <textarea id="note-text" class="form-control char-limited" aria-label="With textarea" style="height: 400px;" placeholder="Enter Note" maxlength="2000"></textarea>
-        <p><span class="char-count">0/2000</span></p>
-      </div>
-
       <%# Save Button %>
-      <div class="mt-3 text-center">
-        <button id="save-note" class="btn btn-primary">Save Note</button>
+      <div class="save">
+        <button id="save-note" class="button">Save Note</button>
       </div>
 
       <script>
         var saveNoteButton = document.querySelector('#save-note'); 
         saveNoteButton.addEventListener('click', function() { //on click of Save Note
+          saveNoteButton.disabled = true;
           var title = document.querySelector('#note-title').value.trim(); //gets title
           var content = document.querySelector('#note-text').value.trim(); //gets text
           var select = document.getElementById("journal-select");

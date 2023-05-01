@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.window {
+    height: 77.6vh;
+}
+
 .greeting {
     text-align: center;
 }

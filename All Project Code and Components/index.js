@@ -294,60 +294,39 @@ app.post('/savenote', async function (req, res) {
     prompt: prompt, //prompt set above
     max_tokens: 2048, //max number of word chunks in a single output
     n: 1, //max number of outputs (only need one)
-    stop: null,
+    stop: null
   });
   const mood_num = parseInt(completion.data.choices[0].text.trim());
   const updateQuery = 'UPDATE entries SET entry_mood = $1 WHERE entry_id = $2;'; //update entry content
   let autoMood = false;
-  console.log(journalId);
   if (journalId) {
     const journalAutoQuery = await db.any('SELECT auto_mood AS auto FROM journals WHERE journals.journal_id = $1', [journalId]);
     autoMood = journalAutoQuery[0].auto;
-
-    db.any(query, [
-      title,
-      rawText,
-      userId,
-      journalId
-    ])
-      .then(function (data) {
-        if (autoMood) {
-          db.any(updateQuery, [mood_num, data[0].entry_id])
-          .then(function(data){
-            res.status(200).json({
-              status: 'success',
-              data: data,
-              message: mood_num
-            });
-          })
-          .catch(function (err) {
-            console.error(err);
-            res.status(400).json({
-              status: 'error',
-              message: 'An error occurred while getting mood num'
-            });
-          });
-        }
-      })
-      .catch(function (err) {
-        console.error(err);
-        res.status(400).json({
-          status: 'error',
-          message: 'An error occurred while saving the note'
-        });
-      });
   }
-  else {
-    db.any(noJournalQuery, [
-      title,
-      rawText,
-      userId
-    ])
+  db.any(query, [
+    title,
+    rawText,
+    userId,
+    journalId
+  ])
     .then(function (data) {
-      res.status(200).json({
-        status: 'success',
-        data: data
-      });
+      if (autoMood) {
+        db.any(updateQuery, [mood_num, data[0].entry_id])
+        .then(function(data){
+          res.status(200).json({
+            status: 'success',
+            data: data,
+            message: mood_num
+          });
+        })
+        .catch(function (err) {
+          console.error(err);
+          res.status(400).json({
+            status: 'error',
+            message: 'An error occurred while getting mood num'
+          });
+        });
+      }
     })
     .catch(function (err) {
       console.error(err);
@@ -356,7 +335,6 @@ app.post('/savenote', async function (req, res) {
         message: 'An error occurred while saving the note'
       });
     });
-  }
 });
 
 // app.post('/getmood', async function (req, res) {
@@ -436,7 +414,6 @@ app.get("/createnewjournal", (req, res) => {
 
 app.post('/savejournal', function (req, res) {
   const {journal_title, journal_description, auto_mood} = req.body;
-  console.log(auto_mood);
   const query =
     'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood) VALUES ($1, $2, $3, $4) RETURNING *;';
   db.any(query, [
