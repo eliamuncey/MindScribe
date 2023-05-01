@@ -318,7 +318,7 @@ app.post('/savenote', async function (req, res) {
             data: data,
             message: mood_num
           });
-          res.redirect('/notes');
+          // res.redirect('/notes');
         })
         .catch(function (err) {
           console.error(err);
@@ -329,7 +329,7 @@ app.post('/savenote', async function (req, res) {
         });
       }
       else {
-        res.redirect('/notes');
+        // res.redirect('/notes');
       }
     })
     .catch(function (err) {
