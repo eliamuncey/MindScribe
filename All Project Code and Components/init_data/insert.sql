@@ -5,17 +5,17 @@ INSERT INTO users (username, password) VALUES
 ('Elia', '$2b$10$DOhXgcmjbgWkRziT3HvWTOXi/hj7jfK4dKhL80jKEfm9JBGgLCQ8q'),
 ('Jared', '$2b$10$DOhXgcmjbgWkRziT3HvWTOXi/hj7jfK4dKhL80jKEfm9JBGgLCQ8q');
 
-INSERT INTO journals (journal_title, journal_description, user_id) VALUES
-('Daily Journal', 'Random Thoughts', 1),
-('Daily Journal', 'Random Thoughts', 2),
-('Daily Journal', 'Random Thoughts', 3),
-('Daily Journal', 'Random Thoughts', 4),
-('Daily Journal', 'Random Thoughts', 5),
-('To-Do', 'Unfinished Tasks', 1),
-('To-Do', 'Unfinished Tasks', 2),
-('To-Do', 'Unfinished Tasks', 3),
-('To-Do', 'Unfinished Tasks', 4),
-('To-Do', 'Unfinished Tasks', 5);
+INSERT INTO journals (journal_title, journal_description, color, user_id) VALUES
+('Daily Journal', 'Random Thoughts', 'red', 1),
+('Daily Journal', 'Random Thoughts', 'red', 2),
+('Daily Journal', 'Random Thoughts', 'red', 3),
+('Daily Journal', 'Random Thoughts', 'red', 4),
+('Daily Journal', 'Random Thoughts', 'red', 5),
+('To-Do', 'Unfinished Tasks', 'blue', 1),
+('To-Do', 'Unfinished Tasks', 'blue', 2),
+('To-Do', 'Unfinished Tasks', 'blue', 3),
+('To-Do', 'Unfinished Tasks', 'blue', 4),
+('To-Do', 'Unfinished Tasks', 'blue', 5);
 
 INSERT INTO entries (entry_title, date, raw_text, journal_id, user_id) VALUES
 ('Almost Summer!', '04/30/2023', 'I can''t believe the semester is almost over!', 1, 1),

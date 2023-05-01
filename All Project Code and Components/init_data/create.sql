@@ -11,7 +11,8 @@ journal_id SERIAL PRIMARY KEY,
 journal_title TEXT,
 journal_description TEXT,
 user_id INT REFERENCES users(user_id),
-auto_mood BOOLEAN DEFAULT FALSE
+auto_mood BOOLEAN DEFAULT FALSE,
+color VARCHAR(6)
 );
 
 DROP TABLE IF EXISTS entries CASCADE;

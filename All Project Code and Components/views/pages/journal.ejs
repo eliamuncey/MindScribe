@@ -1,25 +1,23 @@
 <%- include ('../partials/head') %>
 <%- include ('../partials/menu', {active: 'journal'}) %>
 
-<main>  
-  <div class="container">
+<main>
+    <div class="container">
         <br>
         <h1>Journals</h1>
         <br>
 
         <form action="/createnewjournal">
           <button type="submit" class="btn btn-primary">Create New Journal</button>
-      </form>
+        </form>
 
         <br>
-        <!--<div class="row" style="background-image: url('/images/shelf4.png'); background-size: contain;">-->
-
         <div class="row">
           <% if(journals) { %>
             <% journals.forEach(function (journal) { %>
               <div class="col-md-4">
                 <div class="card" style="width: 18rem;">
-                  <img src="https://i.pinimg.com/originals/36/cf/33/36cf33fdb1dea05ecb998595aa64e893.png" class="card-img" />
+                  <img src="/images/<%=journal.color%>cover.png" class="card-img" />
                   <div class="card-body card-img-overlay text-center">
                     <br><br>
                     <form action="/openjournal">
@@ -30,10 +28,10 @@
                   </div>
                 </div>
               </div>
-            </div>
             <% }) %>
           <% } %>
         </div>
+        <br>
     </div>
 </main>
 

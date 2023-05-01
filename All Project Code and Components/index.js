@@ -414,15 +414,16 @@ app.get("/createnewjournal", (req, res) => {
 })
 
 app.post('/savejournal', function (req, res) {
-  const {journal_title, journal_description, auto_mood} = req.body;
+  const {journal_title, journal_description, auto_mood, color} = req.body;
   console.log(auto_mood);
   const query =
-    'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood) VALUES ($1, $2, $3, $4) RETURNING *;';
+    'INSERT INTO journals (journal_title, journal_description, user_id, auto_mood, color) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
   db.any(query, [
     journal_title, 
     journal_description,
     req.session.user.user_id,
-    auto_mood
+    auto_mood,
+    color
   ])
     .then(function (data) {
       res.status(200).json({
