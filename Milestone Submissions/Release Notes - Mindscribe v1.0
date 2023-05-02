@@ -1,0 +1,11 @@
+Summary: The focus of this release was to get the skeleton of the application together and have the ability to write and save notes. The notes were stored in a table.
+
+## What's Changed
+* Implemented Databases by @eliamuncey in https://github.com/eliamuncey/MindScribe/pull/7
+* Added Create New Note front-end by @blde8334 in https://github.com/eliamuncey/MindScribe/pull/8
+* Added note save functionality by @blde8334 in https://github.com/eliamuncey/MindScribe/pull/9
+* Added menu skeleton by @blde8334 in https://github.com/eliamuncey/MindScribe/pull/10
+* Added note rendering functionality to home page by @blde8334 in https://github.com/eliamuncey/MindScribe/pull/12
+
+**Full Changelog**: https://github.com/eliamuncey/MindScribe/commits/v.1.0
+Note: This release was made retroactively so the source code does not reflect this stage in development
